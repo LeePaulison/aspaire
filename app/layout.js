@@ -1,7 +1,7 @@
 import { Geist, Geist_Mono } from 'next/font/google';
 import './globals.css';
 // Custom Providers
-import { ThemeProvider } from '@/components/providers/themeProvider';
+import { AppProvider } from '@/components/providers/appProvider';
 // UI Components
 import { Header } from '@/components/ui/header';
 
@@ -33,11 +33,11 @@ export default function RootLayout({ children }) {
   return (
     <html lang='en' suppressHydrationWarning>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <ThemeProvider attribute='class' defaultTheme='system' enableSystem={true} disableTransitionOnChange={true}>
+        <AppProvider>
           <Header />
           {/* Main content */}
           {children}
-        </ThemeProvider>
+        </AppProvider>
       </body>
     </html>
   );
