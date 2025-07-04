@@ -1,8 +1,37 @@
-export default function Home() {
+'use client';
+
+import { Button } from '@/components/ui/button';
+
+export default function HomePage() {
   return (
-    <main className='flex flex-col items-center justify-between p-24'>
-      <h1 className='text-4xl font-bold'>Welcome to Aspire</h1>
-      <p className='mt-4 text-lg'>Your journey to better coding starts here.</p>
+    <main className='flex flex-col items-center justify-center min-h-screen px-4 py-12 bg-[var(--background)] text-[var(--foreground)]'>
+      <div className='max-w-2xl text-center space-y-6'>
+        <h1 className='text-4xl font-bold tracking-tight' style={{ color: 'var(--primary)' }}>
+          Welcome to AspAIre
+        </h1>
+
+        <p className='text-lg text-[var(--muted-foreground)]'>
+          Your intelligent, AI-powered job search assistant. Go beyond searching—AspAIre matches jobs to your skills,
+          career goals, and preferred locations.
+        </p>
+
+        <div className='flex justify-center gap-4 mt-8'>
+          <Button
+            className='bg-[var(--primary)] text-[var(--primary-foreground)] hover:bg-[oklch(0.28_0.04_260)]'
+            onClick={() => alert('Explore coming soon!')}
+          >
+            Explore Features
+          </Button>
+
+          <Button
+            variant='outline'
+            className='border-[var(--accent)] text-[var(--accent)] hover:bg-[var(--accent)] hover:text-[var(--accent-foreground)]'
+            onClick={() => alert('Sign up coming soon!')}
+          >
+            Sign Up Free
+          </Button>
+        </div>
+      </div>
     </main>
   );
 }
