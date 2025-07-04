@@ -7,7 +7,11 @@ import { Button } from '@/components/ui/button'
 import { ModeToggle as ThemeToggle } from '@/components/themeToggle'
 
 export function Header() {
-  const { data: status } = useSession();
+  const { data: session, status } = useSession();
+
+  console.log('[Header] Session:', session);
+  console.log('[Header] Status:', status);
+
   return (
     <header className='flex items-center justify-between py-2 px-4'>
       <h1 className='text-xl font-bold'>AspAIre</h1>
