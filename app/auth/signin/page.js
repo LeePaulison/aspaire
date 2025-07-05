@@ -5,24 +5,25 @@ import { signIn } from 'next-auth/react';
 import { useSearchParams } from 'next/navigation';
 // Shadcn UI imports
 import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
 
 export default function SignInPage() {
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get('callbackUrl') || '/';
 
   return (
-    <main className='flex items-center justify-center min-h-screen bg-gray-950'>
-      <div className='p-8 rounded-xl bg-gray-800 text-white max-w-sm w-full shadow-lg'>
-        <h1 className='text-3xl font-bold mb-6'>Sign in to AspAIre</h1>
+    <main className='flex items-center justify-center w-full h-full'>
+      <Card className='card p-8 rounded-xl max-w-sm w-full shadow-lg my-auto'>
+        <h1 className='text-3xl font-bold mb-6 mx-auto'>Sign In</h1>
 
         <Button
           variant='outline'
-          className='border-[var(--accent)] text-[var(--accent)] hover:bg-[var(--accent)] hover:text-[var(--accent-foreground)]'
+          className='border-muted text-accent hover:bg-accent hover:text-accent-foreground w-full'
           onClick={() => signIn('github', { callbackUrl })}
         >
           Sign in with GitHub
         </Button>
-      </div>
+      </Card>
     </main>
   );
 }

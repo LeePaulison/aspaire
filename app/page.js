@@ -4,8 +4,8 @@ import { Button } from '@/components/ui/button';
 
 export default function HomePage() {
   return (
-    <main className='flex flex-col items-center justify-center min-h-screen px-4 py-12 bg-[var(--background)] text-[var(--foreground)]'>
-      <div className='max-w-2xl text-center space-y-6'>
+    <>
+      <div className='flex flex-col justify-center w-full h-full text-center space-y-6'>
         <h1 className='text-4xl font-bold tracking-tight' style={{ color: 'var(--primary)' }}>
           Welcome to AspAIre
         </h1>
@@ -32,6 +32,6 @@ export default function HomePage() {
           </Button>
         </div>
       </div>
-    </main>
+    </>
   );
 }

@@ -4,6 +4,7 @@ import './globals.css';
 import { AppProvider } from '@/components/providers/appProvider';
 // UI Components
 import { Header } from '@/components/ui/header';
+import { Footer } from '@/components/ui/footer';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -34,9 +35,16 @@ export default function RootLayout({ children }) {
     <html lang='en' suppressHydrationWarning>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <AppProvider>
-          <Header />
-          {/* Main content */}
-          {children}
+          <div className='flex flex-col h-screen overflow-x-hidden'>
+            {/* Header */}
+            <Header />
+            {/* Main content */}
+            <main className='flex-grow overflow-y-auto'>
+              <section className='container h-full'>{children}</section>
+            </main>
+            {/* Footer */}
+            <Footer />
+          </div>
         </AppProvider>
       </body>
     </html>
