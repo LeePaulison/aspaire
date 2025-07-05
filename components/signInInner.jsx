@@ -1,4 +1,6 @@
 'use client';
+// Next Router imports
+import { useSearchParams } from 'next/navigation';
 // Next JS imports
 import Link from 'next/link';
 // Next Auth imports
@@ -7,7 +9,9 @@ import { signIn } from 'next-auth/react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 
-export default function SignInInner({ callbackUrl }) {
+export default function SignInInner() {
+  const searchParams = useSearchParams();
+  const callbackUrl = searchParams.get('callbackUrl') || '/';
 
   return (
     <main className='flex items-center justify-center w-full h-full'>
