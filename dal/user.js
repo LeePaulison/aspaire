@@ -1,5 +1,7 @@
 import { getDbClient } from '../lib/neon/db.js';
 
+// This file contains functions to interact with the users table in the database.
+
 export async function createUser(user) {
   const client = await getDbClient();
 
