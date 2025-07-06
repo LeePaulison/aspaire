@@ -27,7 +27,16 @@ export async function createResume(data) {
       data.uploadedAt,
     ];
     const result = await client.query(query, values);
-    return result.rows[0];
+    const row = result.rows[0];
+    return {
+      id: row.id,
+      userId: row.user_id,
+      s3Key: row.s3_key,
+      originalFilename: row.original_filename,
+      size: row.size,
+      contentType: row.content_type,
+      uploadedAt: row.uploaded_at,
+    };
   } catch (error) {
     console.error('Error creating resume:', error);
     throw error;
@@ -36,7 +45,7 @@ export async function createResume(data) {
   }
 }
 
-export async function getResume(id) {
+export async function getResumeById(id) {
   const client = await getDbClient();
 
   try {
@@ -45,9 +54,46 @@ export async function getResume(id) {
       WHERE id = $1;
     `;
     const result = await client.query(query, [id]);
-    return result.rows[0] || null;
+    const row = result.rows[0];
+    if (!row) return null;
+
+    return {
+      id: row.id,
+      userId: row.user_id,
+      s3Key: row.s3_key,
+      originalFilename: row.original_filename,
+      size: row.size,
+      contentType: row.content_type,
+      uploadedAt: row.uploaded_at,
+    };
   } catch (error) {
     console.error('Error getting resume:', error);
+    throw error;
+  } finally {
+    await client.end();
+  }
+}
+
+export async function getResumesByUserId(userId) {
+  const client = await getDbClient();
+
+  try {
+    const query = `
+      SELECT * FROM resumes
+      WHERE user_id = $1; 
+    `;
+    const result = await client.query(query, [userId]);
+    return result.rows.map((row) => ({
+      id: row.id,
+      userId: row.user_id,
+      s3Key: row.s3_key,
+      originalFilename: row.original_filename,
+      size: row.size,
+      contentType: row.content_type,
+      uploadedAt: row.uploaded_at.toISOString(),
+    }));
+  } catch (error) {
+    console.error('Error getting resumes by user ID:', error);
     throw error;
   } finally {
     await client.end();
@@ -72,7 +118,16 @@ export async function updateResume(id, data) {
     `;
     const values = [data.userId, data.s3Key, data.originalFilename, data.size, data.contentType, data.uploadedAt, id];
     const result = await client.query(query, values);
-    return result.rows[0];
+    const row = result.rows[0];
+    return {
+      id: row.id,
+      userId: row.user_id,
+      s3Key: row.s3_key,
+      originalFilename: row.original_filename,
+      size: row.size,
+      contentType: row.content_type,
+      uploadedAt: row.uploaded_at.toISOString(),
+    };
   } catch (error) {
     console.error('Error updating resume:', error);
     throw error;
@@ -90,6 +145,7 @@ export async function deleteResume(id) {
       WHERE id = $1;
     `;
     await client.query(query, [id]);
+    return { success: true, message: 'Resume deleted successfully' };
   } catch (error) {
     console.error('Error deleting resume:', error);
     throw error;

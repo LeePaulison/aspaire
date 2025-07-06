@@ -1,5 +1,6 @@
 import { createUser, getUserById } from '../../dal/user.js';
 import { setPreferences, getPreferencesByUserId } from '../../dal/preferences.js';
+import { getResumesByUserId } from '../../dal/resumes.js';
 
 export const userResolvers = {
   // Resolver for User type
@@ -8,22 +9,26 @@ export const userResolvers = {
       let preferences = await getPreferencesByUserId(parent.id);
 
       if (!preferences) {
-        await setPreferences({
-          user_id: parent.id,
-          preferred_locations: [],
+        preferences = await setPreferences({
+          userId: parent.id,
+          preferredLocations: [],
           remote: false,
           industries: [],
-          salary_min: 0,
-          salary_max: 0,
-          notifications_enabled: true,
+          salaryMin: 0,
+          salaryMax: 0,
+          notificationsEnabled: true,
         });
 
-        preferences = await getPreferencesByUserId(parent.id);
+        console.log(`Default preferences created for user ${parent.id}`);
       }
 
       return preferences;
     },
+    resumes: async (parent) => {
+      return await getResumesByUserId(parent.id);
+    },
   },
+  // Resolvers for Query and Mutation types
 
   Query: {
     user: async (_, { id }) => {
@@ -50,13 +55,13 @@ export const userResolvers = {
       }
       // set default preferences
       await setPreferences({
-        user_id: existingUser.id,
-        preferred_locations: [],
+        userId: existingUser.id,
+        preferredLocations: [],
         remote: false,
         industries: [],
-        salary_min: 0,
-        salary_max: 0,
-        notifications_enabled: true,
+        salaryMin: 0,
+        salaryMax: 0,
+        notificationsEnabled: true,
       });
 
       return existingUser;

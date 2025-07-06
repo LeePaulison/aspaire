@@ -9,8 +9,12 @@ export const resumeTypeDefs = `
     uploadedAt: String!
   }
 
+  type DeleteResult {
+    success: Boolean!
+    message: String
+  }
+
   input CreateResumeInput {
-    id: ID!
     userId: ID!
     s3Key: String!
     originalFilename: String!
@@ -21,9 +25,12 @@ export const resumeTypeDefs = `
 
   extend type Mutation {
     createResume(input: CreateResumeInput!): Resume
+    updateResume(id: ID!, input: CreateResumeInput!): Resume
+    deleteResume(id: ID!): DeleteResult
   }
 
   extend type Query {
     resume(id: ID!): Resume
+    resumesByUser(userId: ID!): [Resume!]!
   }
 `;

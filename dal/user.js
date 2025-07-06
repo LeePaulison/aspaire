@@ -34,9 +34,21 @@ export async function getUserById(id) {
       SELECT * FROM users
       WHERE id = $1;
     `;
-
     const result = await client.query(query, [id]);
-    return result.rows[0] || null;
+    const row = result.rows[0];
+
+    if (!row) return null;
+
+    return {
+      id: row.id,
+      authProviderId: row.auth_provider_id,
+      authProvider: row.auth_provider,
+      email: row.email,
+      name: row.name,
+    };
+  } catch (error) {
+    console.error('Error getting user:', error);
+    throw error;
   } finally {
     await client.end();
   }
