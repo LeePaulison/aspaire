@@ -12,7 +12,7 @@ export async function GET(req) {
     return new Response('Unauthorized', { status: 401 });
   }
 
-  const signed = jwt.sign(payload, process.env.NEXTAUTH_SECRET, {
+  const signed = jwt.sign(payload, process.env.JWT_SECRET, {
     algorithm: 'HS256',
   });
 
