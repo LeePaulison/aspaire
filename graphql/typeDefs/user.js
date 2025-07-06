@@ -5,6 +5,7 @@ export const userTypeDefs = `
     auth_provider: String!
     email: String!
     name: String
+    preferences: Preferences
   }
 
   input CreateUserInput {
@@ -13,6 +14,7 @@ export const userTypeDefs = `
     auth_provider: String!
     email: String!
     name: String
+    preferences: PreferencesInput
   }
 
   type Mutation {
@@ -20,7 +22,6 @@ export const userTypeDefs = `
   }
 
   type Query {
-    hello: String
     user(id: ID!): User
   }
 `;

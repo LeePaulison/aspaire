@@ -3,8 +3,6 @@ import { getDbClient } from '../lib/neon/db.js';
 export async function createUser(user) {
   const client = await getDbClient();
 
-  console.log('Creating user:', user);
-
   try {
     const query = `
       INSERT INTO users (id, auth_provider_id, auth_provider, email, name)
@@ -18,8 +16,6 @@ export async function createUser(user) {
     `;
 
     const values = [user.id, user.auth_provider_id, user.auth_provider, user.email, user.name];
-
-    console.log('Executing query:', query, 'with values:', values);
 
     const result = await client.query(query, values);
     return result.rows[0];
