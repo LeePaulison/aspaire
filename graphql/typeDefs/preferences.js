@@ -1,31 +1,31 @@
 export const preferencesTypeDefs = `
   type Preferences {
-    user_id: ID!
-    preferred_locations: [String]
+    userId: ID!
+    preferredLocations: [String]
     remote: Boolean
     industries: [String]
-    salary_min: Int
-    salary_max: Int
-    notifications_enabled: Boolean
-    created_at: String
-    updated_at: String
+    salaryMin: Int
+    salaryMax: Int
+    notificationsEnabled: Boolean
+    createdAt: String
+    updatedAt: String
   }
 
   input PreferencesInput {
-    user_id: ID!
-    preferred_locations: [String]
+    userId: ID!
+    preferredLocations: [String]
     remote: Boolean
     industries: [String]
-    salary_min: Int
-    salary_max: Int
-    notifications_enabled: Boolean
+    salaryMin: Int
+    salaryMax: Int
+    notificationsEnabled: Boolean
   }
 
-  type Mutation {
+  extend type Mutation {
     setPreferences(input: PreferencesInput!): Preferences
   }
 
-  type Query {
+  extend type Query {
     preferences(user_id: ID!): Preferences
   }
 `;

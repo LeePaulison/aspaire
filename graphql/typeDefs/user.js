@@ -1,27 +1,28 @@
 export const userTypeDefs = `
   type User {
     id: ID!
-    auth_provider_id: String!
-    auth_provider: String!
+    authProviderId: String!
+    authProvider: String!
     email: String!
     name: String
     preferences: Preferences
+    resumes: [Resume]
   }
 
   input CreateUserInput {
     id: ID!
-    auth_provider_id: String!
-    auth_provider: String!
+    authProviderId: String!
+    authProvider: String!
     email: String!
     name: String
     preferences: PreferencesInput
   }
 
-  type Mutation {
+  extend type Mutation {
     createUser(input: CreateUserInput!): User
   }
 
-  type Query {
+  extend type Query {
     user(id: ID!): User
   }
 `;

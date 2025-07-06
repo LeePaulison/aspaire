@@ -17,7 +17,7 @@ export async function createUser(user) {
       RETURNING *;
     `;
 
-    const values = [user.id, user.auth_provider_id, user.auth_provider, user.email, user.name];
+    const values = [user.id, user.authProviderId, user.authProvider, user.email, user.name];
 
     const result = await client.query(query, values);
     return result.rows[0];

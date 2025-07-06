@@ -22,13 +22,13 @@ export async function setPreferences(preferences) {
     `;
 
     const values = [
-      preferences.user_id,
-      preferences.preferred_locations,
+      preferences.userId,
+      preferences.preferredLocations,
       preferences.remote,
       preferences.industries,
-      preferences.salary_min,
-      preferences.salary_max,
-      preferences.notifications_enabled,
+      preferences.salaryMin,
+      preferences.salaryMax,
+      preferences.notificationsEnabled,
     ];
 
     const result = await client.query(query, values);
