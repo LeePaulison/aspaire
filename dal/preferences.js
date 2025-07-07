@@ -12,9 +12,10 @@ export async function setPreferences(data) {
             industries,
             salary_min,
             salary_max,
-            notifications_enabled
+            notifications_enabled,
+            pagination_limit
         )
-        VALUES ($1, $2, $3, $4, $5, $6, $7)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
         ON CONFLICT (user_id)
         DO UPDATE SET
             preferred_locations = EXCLUDED.preferred_locations,
@@ -22,7 +23,8 @@ export async function setPreferences(data) {
             industries = EXCLUDED.industries,
             salary_min = EXCLUDED.salary_min,
             salary_max = EXCLUDED.salary_max,
-            notifications_enabled = EXCLUDED.notifications_enabled
+            notifications_enabled = EXCLUDED.notifications_enabled,
+            pagination_limit = EXCLUDED.pagination_limit
         RETURNING *;
       `;
 
@@ -34,6 +36,7 @@ export async function setPreferences(data) {
       data.salaryMin,
       data.salaryMax,
       data.notificationsEnabled,
+      data.paginationLimit,
     ];
 
     const result = await client.query(query, values);
@@ -47,6 +50,7 @@ export async function setPreferences(data) {
       salaryMin: row.salary_min,
       salaryMax: row.salary_max,
       notificationsEnabled: row.notifications_enabled,
+      paginationLimit: row.pagination_limit,
       createdAt: row.created_at.toISOString(),
       updatedAt: row.updated_at.toISOString(),
     };
@@ -80,6 +84,7 @@ export async function getPreferencesByUserId(userId) {
       salaryMin: row.salary_min,
       salaryMax: row.salary_max,
       notificationsEnabled: row.notifications_enabled,
+      paginationLimit: row.pagination_limit,
       createdAt: row.created_at.toISOString(),
       updatedAt: row.updated_at.toISOString(),
     };

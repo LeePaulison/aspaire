@@ -9,8 +9,8 @@ export const resumeResolvers = {
       }
       return resume;
     },
-    resumesByUser: async (_, { userId }) => {
-      return await getResumesByUserId(userId);
+    resumesByUser: async (_, { userId, limit, offset }) => {
+      return await getResumesByUserId(userId, limit, offset);
     },
   },
   Mutation: {

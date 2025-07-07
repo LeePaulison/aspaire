@@ -31,6 +31,6 @@ export const resumeTypeDefs = `
 
   extend type Query {
     resume(id: ID!): Resume
-    resumesByUser(userId: ID!): [Resume!]!
+    resumesByUser(userId: ID!, limit: Int!, offset: Int!): [Resume!]!
   }
 `;

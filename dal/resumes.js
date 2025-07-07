@@ -1,12 +1,11 @@
 import { getDbClient } from '@/lib/neon/db';
 
-export async function createResume(data) {
+export async function createResume(resume) {
   const client = await getDbClient();
 
   try {
     const query = `
       INSERT INTO resumes (
-        id,
         user_id,
         s3_key,
         original_filename,
@@ -14,18 +13,19 @@ export async function createResume(data) {
         content_type,
         uploaded_at
       )
-      VALUES ($1, $2, $3, $4, $5, $6, $7)
+      VALUES ($1, $2, $3, $4, $5, $6)
       RETURNING *;
     `;
+
     const values = [
-      data.id,
-      data.userId,
-      data.s3Key,
-      data.originalFilename,
-      data.size,
-      data.contentType,
-      data.uploadedAt,
+      resume.userId,
+      resume.s3Key,
+      resume.originalFilename,
+      resume.size,
+      resume.contentType,
+      resume.uploadedAt,
     ];
+
     const result = await client.query(query, values);
     const row = result.rows[0];
     return {
@@ -74,15 +74,16 @@ export async function getResumeById(id) {
   }
 }
 
-export async function getResumesByUserId(userId) {
+export async function getResumesByUserId(userId, limit = 10, offset = 0) {
   const client = await getDbClient();
 
   try {
     const query = `
       SELECT * FROM resumes
-      WHERE user_id = $1; 
+      WHERE user_id = $1
+      LIMIT $2 OFFSET $3;
     `;
-    const result = await client.query(query, [userId]);
+    const result = await client.query(query, [userId, limit, offset]);
     return result.rows.map((row) => ({
       id: row.id,
       userId: row.user_id,
@@ -100,7 +101,7 @@ export async function getResumesByUserId(userId) {
   }
 }
 
-export async function updateResume(id, data) {
+export async function updateResume(id, resume) {
   const client = await getDbClient();
 
   try {
@@ -116,7 +117,15 @@ export async function updateResume(id, data) {
       WHERE id = $7
       RETURNING *;
     `;
-    const values = [data.userId, data.s3Key, data.originalFilename, data.size, data.contentType, data.uploadedAt, id];
+    const values = [
+      resumeuserId,
+      resumes3Key,
+      resumeoriginalFilename,
+      resumesize,
+      resumecontentType,
+      resumeuploadedAt,
+      id,
+    ];
     const result = await client.query(query, values);
     const row = result.rows[0];
     return {

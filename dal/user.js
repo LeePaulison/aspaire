@@ -20,7 +20,18 @@ export async function createUser(user) {
     const values = [user.id, user.authProviderId, user.authProvider, user.email, user.name];
 
     const result = await client.query(query, values);
-    return result.rows[0];
+
+    const row = result.rows[0];
+
+    if (!row) return null;
+
+    return {
+      id: row.id,
+      authProviderId: row.auth_provider_id,
+      authProvider: row.auth_provider,
+      email: row.email,
+      name: row.name,
+    };
   } finally {
     await client.end();
   }
