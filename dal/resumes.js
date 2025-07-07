@@ -118,12 +118,12 @@ export async function updateResume(id, resume) {
       RETURNING *;
     `;
     const values = [
-      resumeuserId,
-      resumes3Key,
-      resumeoriginalFilename,
-      resumesize,
-      resumecontentType,
-      resumeuploadedAt,
+      resume.userId,
+      resume.s3Key,
+      resume.originalFilename,
+      resume.size,
+      resume.contentType,
+      resume.uploadedAt,
       id,
     ];
     const result = await client.query(query, values);

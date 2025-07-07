@@ -6,7 +6,7 @@ export const userTypeDefs = `
     email: String!
     name: String
     preferences: Preferences
-    resumes: [Resume]
+    resumes(limit: Int!, offset: Int!): [Resume]
   }
 
   input CreateUserInput {

@@ -1,70 +1,31 @@
-import { createUser, getUserById } from '../../dal/user.js';
-import { setPreferences, getPreferencesByUserId } from '../../dal/preferences.js';
-import { getResumesByUserId } from '../../dal/resumes.js';
+import { getOrCreatePreferencesForUser, createOrFetchUser } from '@/services/userService';
+import { getResumesByUserId } from '@/dal/resumes';
 
 export const userResolvers = {
-  // Resolver for User type
   User: {
     preferences: async (parent) => {
-      let preferences = await getPreferencesByUserId(parent.id);
-
-      if (!preferences) {
-        preferences = await setPreferences({
-          userId: parent.id,
-          preferredLocations: [],
-          remote: false,
-          industries: [],
-          salaryMin: 0,
-          salaryMax: 0,
-          notificationsEnabled: true,
-        });
-
-        console.log(`Default preferences created for user ${parent.id}`);
-      }
-
-      return preferences;
+      return await getOrCreatePreferencesForUser(parent.id);
     },
-    resumes: async (parent) => {
-      return await getResumesByUserId(parent.id);
+    resumes: async (parent, { limit, offset }) => {
+      const safeLimit = Math.max(1, Math.min(limit, 50)); // Limit to a maximum of 50 resumes
+      const safeOffset = Math.max(offset, 0); // Ensure offset is non-negative
+      return await getResumesByUserId(parent.id, safeLimit, safeOffset);
     },
   },
-  // Resolvers for Query and Mutation types
 
   Query: {
     user: async (_, { id }) => {
-      const user = await getUserById(id);
-      // If user does not exist, throw an error
+      const user = await createOrFetchUser({ id });
       if (!user) {
         throw new Error(`User with ID ${id} does not exist.`);
       }
       return user;
     },
   },
+
   Mutation: {
     createUser: async (_, { input }) => {
-      let existingUser = await getUserById(input.id);
-
-      if (!existingUser) {
-        existingUser = await createUser(input);
-      }
-
-      const existingPreferences = await getPreferencesByUserId(existingUser.id);
-      if (existingPreferences) {
-        // If preferences already exist, return the user with existing preferences
-        return existingUser;
-      }
-      // set default preferences
-      await setPreferences({
-        userId: existingUser.id,
-        preferredLocations: [],
-        remote: false,
-        industries: [],
-        salaryMin: 0,
-        salaryMax: 0,
-        notificationsEnabled: true,
-      });
-
-      return existingUser;
+      return await createOrFetchUser(input);
     },
   },
 };
