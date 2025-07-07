@@ -1,4 +1,11 @@
-import { createResume, getResumeById, getResumesByUserId, updateResume, deleteResume } from '@/dal/resumes';
+import {
+  createFileResume,
+  createPastedResume,
+  getResumeById,
+  getResumesByUserId,
+  updateResume,
+  deleteResume,
+} from '@/dal/resumes';
 
 export const resumeResolvers = {
   Query: {
@@ -9,13 +16,14 @@ export const resumeResolvers = {
       }
       return resume;
     },
+
     resumesByUser: async (_, { userId, limit, offset }) => {
       return await getResumesByUserId(userId, limit, offset);
     },
   },
+
   Mutation: {
-    createResume: async (_, { input }) => {
-      // Check if a resume with the same S3 key already exists for the user
+    createFileResume: async (_, { input }) => {
       const existingResumes = await getResumesByUserId(input.userId);
       const resumeWithSameS3Key = existingResumes.find((resume) => resume.s3Key === input.s3Key);
 
@@ -23,15 +31,30 @@ export const resumeResolvers = {
         throw new Error(`A resume with the same S3 key already exists for user ID ${input.userId}.`);
       }
 
-      return await createResume(input);
+      if (input.sourceType !== 'file') {
+        throw new Error(`Invalid sourceType for file resume.`);
+      }
+
+      return await createFileResume(input);
     },
+
+    createPastedResume: async (_, { input }) => {
+      if (input.sourceType !== 'partial') {
+        throw new Error(`Invalid sourceType for pasted resume.`);
+      }
+
+      return await createPastedResume(input);
+    },
+
     updateResume: async (_, { id, input }) => {
       const existing = await getResumeById(id);
       if (!existing) {
         throw new Error(`Resume with ID ${id} does not exist.`);
       }
+
       return await updateResume(id, input);
     },
+
     deleteResume: async (_, { id }) => {
       const existing = await getResumeById(id);
       if (!existing) {
