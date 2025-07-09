@@ -1,8 +1,13 @@
 export const userTypeDefs = `
+enum AuthProvider {
+  GITHUB
+  GOOGLE
+}
+
   type User {
     id: ID!
     authProviderId: String!
-    authProvider: String!
+    authProvider: AuthProvider!
     email: String!
     name: String
     preferences: Preferences
@@ -12,7 +17,7 @@ export const userTypeDefs = `
   input CreateUserInput {
     id: ID!
     authProviderId: String!
-    authProvider: String!
+    authProvider: AuthProvider!
     email: String!
     name: String
     preferences: PreferencesInput

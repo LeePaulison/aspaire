@@ -1,4 +1,10 @@
 export const resumeTypeDefs = `
+  enum ResumeSourceType {
+    UPLOAD
+    PASTE
+    IMPORT
+  }
+
   type Resume {
     id: ID!
     userId: ID!
@@ -10,7 +16,7 @@ export const resumeTypeDefs = `
     createdAt: String!
     updatedAt: String
     description: String
-    sourceType: String!
+    sourceType: ResumeSourceType!
     partial: Boolean
     pastedContent: String
   }
@@ -27,14 +33,14 @@ export const resumeTypeDefs = `
     size: Int!
     contentType: String!
     uploadedAt: String!
-    sourceType: String!
+    sourceType: ResumeSourceType!
     description: String
   }
 
   input CreatePastedResumeInput {
     userId: ID!
     pastedContent: String!
-    sourceType: String!
+    sourceType: ResumeSourceType!
     description: String
     createdAt: String
     updatedAt: String

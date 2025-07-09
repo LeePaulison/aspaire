@@ -14,8 +14,11 @@ export async function setPreferences(data) {
             salary_max,
             notifications_enabled,
             pagination_limit
+            preferred_titles,
+            preferred_skills,
+            salary_currency
         )
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
         ON CONFLICT (user_id)
         DO UPDATE SET
             preferred_locations = EXCLUDED.preferred_locations,
@@ -24,7 +27,10 @@ export async function setPreferences(data) {
             salary_min = EXCLUDED.salary_min,
             salary_max = EXCLUDED.salary_max,
             notifications_enabled = EXCLUDED.notifications_enabled,
-            pagination_limit = EXCLUDED.pagination_limit
+            pagination_limit = EXCLUDED.pagination_limit,
+            preferred_titles = EXCLUDED.preferred_titles,
+            preferred_skills = EXCLUDED.preferred_skills,
+            salary_currency = EXCLUDED.salary_currency
         RETURNING *;
       `;
 
@@ -37,6 +43,9 @@ export async function setPreferences(data) {
       data.salaryMax,
       data.notificationsEnabled,
       data.paginationLimit,
+      data.preferredTitles,
+      data.preferredSkills,
+      data.salaryCurrency,
     ];
 
     const result = await client.query(query, values);
@@ -51,6 +60,9 @@ export async function setPreferences(data) {
       salaryMax: row.salary_max,
       notificationsEnabled: row.notifications_enabled,
       paginationLimit: row.pagination_limit,
+      preferredTitles: row.preferred_titles,
+      preferredSkills: row.preferred_skills,
+      salaryCurrency: row.salary_currency,
       createdAt: row.created_at.toISOString(),
       updatedAt: row.updated_at.toISOString(),
     };
@@ -85,6 +97,9 @@ export async function getPreferencesByUserId(userId) {
       salaryMax: row.salary_max,
       notificationsEnabled: row.notifications_enabled,
       paginationLimit: row.pagination_limit,
+      preferredTitles: row.preferred_titles,
+      preferredSkills: row.preferred_skills,
+      salaryCurrency: row.salary_currency,
       createdAt: row.created_at.toISOString(),
       updatedAt: row.updated_at.toISOString(),
     };

@@ -9,6 +9,10 @@ export const preferencesTypeDefs = `
     notificationsEnabled: Boolean
     createdAt: String
     updatedAt: String
+    paginationLimit: Int
+    preferredTitles: [String]
+    preferredSkills: [String]
+    salaryCurrency: String
   }
 
   input PreferencesInput {
@@ -19,6 +23,10 @@ export const preferencesTypeDefs = `
     salaryMin: Int
     salaryMax: Int
     notificationsEnabled: Boolean
+    paginationLimit: Int
+    preferredTitles: [String]
+    preferredSkills: [String]
+    salaryCurrency: String
   }
 
   extend type Mutation {
