@@ -21,8 +21,8 @@ export const userResolvers = {
       }
       return user;
     },
-    userByAuth: async (_, { authProviderId, authProvider }) => {
-      const user = await createOrFetchUser({ authProviderId, authProvider });
+    userByAuth: async (_, { authProviderId, authProvider, email, name }) => {
+      const user = await createOrFetchUser({ authProviderId, authProvider, email, name });
       if (!user) {
         throw new Error(`User with authProviderId ${authProviderId} and authProvider ${authProvider} does not exist.`);
       }

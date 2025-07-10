@@ -2,7 +2,37 @@
 
 import { Button } from '@/components/ui/button';
 
+import { useSession, signIn, signOut } from 'next-auth/react';
+import { useLazyQuery } from '@apollo/client';
+import { GET_USER_BY_AUTH } from '@/graphql/queries/user';
+import React from 'react';
+
 export default function HomePage() {
+  const { data: useData } = useSession();
+  const [fetchUser, { loading, error, data }] = useLazyQuery(GET_USER_BY_AUTH);
+
+  React.useEffect(() => {
+    console.log('[HomePage] useSession data:', useData);
+    console.log('[HomePage] user:', useData?.user);
+
+    if (useData?.user) {
+      console.log('[HomePage] Fetching user data for:', useData.user.email);
+      fetchUser({
+        variables: {
+          authProvider: 'GITHUB',
+          authProviderId: useData.user.id,
+          email: useData.user.email || '',
+          name: useData.user.name || '',
+        },
+      });
+    }
+  }, [useData, fetchUser]);
+
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>Error fetching user data: {error.message}</p>;
+
+  console.log('[HomePage] Fetched user data:', data);
+
   return (
     <>
       <div className='flex flex-col justify-center w-full h-full text-center space-y-6'>

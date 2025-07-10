@@ -23,12 +23,16 @@ enum AuthProvider {
     preferences: PreferencesInput
   }
 
+  extend type Query {
+    userByAuth(authProviderId: String!, authProvider: AuthProvider!, email: String!, name: String): User
+  }
+
   extend type Mutation {
     createUser(input: CreateUserInput!): User
   }
 
   extend type Query {
     user(id: ID!): User
-    userByAuth(authProviderId: String!, authProvider: AuthProvider!): User
+    userByAuth(authProviderId: String!, authProvider: AuthProvider!, email: String!, name: String): User
   }
 `;

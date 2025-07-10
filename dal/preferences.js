@@ -13,7 +13,7 @@ export async function setPreferences(data) {
             salary_min,
             salary_max,
             notifications_enabled,
-            pagination_limit
+            pagination_limit,
             preferred_titles,
             preferred_skills,
             salary_currency

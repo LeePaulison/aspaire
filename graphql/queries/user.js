@@ -1,8 +1,8 @@
 import { gql } from '@apollo/client';
 
 export const GET_USER_BY_AUTH = gql`
-  query GetUserByAuth($authProvider: AuthProvider!, $authProviderId: String!) {
-    userByAuth(authProvider: $authProvider, authProviderId: $authProviderId) {
+  query GetUserByAuth($authProvider: AuthProvider!, $authProviderId: String!, $email: String!, $name: String) {
+    userByAuth(authProvider: $authProvider, authProviderId: $authProviderId, email: $email, name: $name) {
       id
       authProviderId
       authProvider

@@ -3,13 +3,18 @@ import { getDbClient } from '../lib/neon/db.js';
 // This file contains functions to interact with the users table in the database.
 
 export async function createUser(user) {
+  // Validate user input
+  if (!user.email || !user.name) {
+    throw new Error('Cannot create user without email and name.');
+  }
+
   const client = await getDbClient();
 
   try {
     const query = `
-      INSERT INTO users (id, auth_provider_id, auth_provider, email, name)
-      VALUES ($1, $2, $3, $4, $5)
-      ON CONFLICT (id)
+      INSERT INTO users (auth_provider_id, auth_provider, email, name)
+      VALUES ($1, $2, $3, $4)
+      ON CONFLICT (auth_provider_id, auth_provider)
       DO UPDATE SET
         email = EXCLUDED.email,
         name = EXCLUDED.name,
@@ -17,7 +22,7 @@ export async function createUser(user) {
       RETURNING *;
     `;
 
-    const values = [user.id, user.authProviderId, user.authProvider, user.email, user.name];
+    const values = [user.authProviderId, user.authProvider, user.email, user.name];
 
     const result = await client.query(query, values);
 

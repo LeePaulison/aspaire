@@ -25,6 +25,11 @@ export async function getOrCreatePreferencesForUser(userId) {
 }
 
 export async function createOrFetchUser(userInput) {
+  // Validate userInput
+  if (!userInput || !userInput.authProviderId || !userInput.authProvider || !userInput.email || !userInput.name) {
+    throw new Error('Invalid user input. authProviderId, authProvider, email, and name are required.');
+  }
+
   let user = await getUserByAuth(userInput.authProviderId, userInput.authProvider);
 
   if (!user) {
