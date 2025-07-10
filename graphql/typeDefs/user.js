@@ -29,5 +29,6 @@ enum AuthProvider {
 
   extend type Query {
     user(id: ID!): User
+    userByAuth(authProviderId: String!, authProvider: AuthProvider!): User
   }
 `;

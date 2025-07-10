@@ -37,6 +37,31 @@ export async function createUser(user) {
   }
 }
 
+export async function getUserByAuth(authProviderId, authProvider) {
+  const client = await getDbClient();
+
+  try {
+    const query = `
+      SELECT * FROM users
+      WHERE auth_provider_id = $1 AND auth_provider = $2;
+    `;
+    const result = await client.query(query, [authProviderId, authProvider]);
+    const row = result.rows[0];
+
+    if (!row) return null;
+
+    return {
+      id: row.id,
+      authProviderId: row.auth_provider_id,
+      authProvider: row.auth_provider,
+      email: row.email,
+      name: row.name,
+    };
+  } finally {
+    await client.end();
+  }
+}
+
 export async function getUserById(id) {
   const client = await getDbClient();
 

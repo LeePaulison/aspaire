@@ -21,6 +21,13 @@ export const userResolvers = {
       }
       return user;
     },
+    userByAuth: async (_, { authProviderId, authProvider }) => {
+      const user = await createOrFetchUser({ authProviderId, authProvider });
+      if (!user) {
+        throw new Error(`User with authProviderId ${authProviderId} and authProvider ${authProvider} does not exist.`);
+      }
+      return user;
+    },
   },
 
   Mutation: {

@@ -1,18 +1,22 @@
 import { getPreferencesByUserId, setPreferences } from '@/dal/preferences';
-import { getUserById, createUser } from '@/dal/user';
+import { getUserByAuth, createUser } from '@/dal/user';
 
 export async function getOrCreatePreferencesForUser(userId) {
   let preferences = await getPreferencesByUserId(userId);
 
   if (!preferences) {
     await setPreferences({
-      user_id: userId,
-      preferred_locations: [],
+      userId,
+      preferredLocations: [],
       remote: false,
       industries: [],
-      salary_min: 0,
-      salary_max: 0,
-      notifications_enabled: true,
+      salaryMin: 0,
+      salaryMax: 0,
+      notificationsEnabled: true,
+      paginationLimit: 10,
+      preferredTitles: [],
+      preferredSkills: [],
+      salaryCurrency: 'USD',
     });
     preferences = await getPreferencesByUserId(userId);
   }
@@ -21,18 +25,22 @@ export async function getOrCreatePreferencesForUser(userId) {
 }
 
 export async function createOrFetchUser(userInput) {
-  let user = await getUserById(userInput.id);
+  let user = await getUserByAuth(userInput.authProviderId, userInput.authProvider);
 
   if (!user) {
     user = await createUser(userInput);
     await setPreferences({
-      user_id: user.id,
-      preferred_locations: [],
+      userId: user.id,
+      preferredLocations: [],
       remote: false,
       industries: [],
-      salary_min: 0,
-      salary_max: 0,
-      notifications_enabled: true,
+      salaryMin: 0,
+      salaryMax: 0,
+      notificationsEnabled: true,
+      paginationLimit: 10,
+      preferredTitles: [],
+      preferredSkills: [],
+      salaryCurrency: 'USD',
     });
   }
 
