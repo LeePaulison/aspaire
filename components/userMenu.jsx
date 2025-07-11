@@ -14,7 +14,9 @@ import {
 // Luside icons
 import { LuMenu } from "react-icons/lu";
 
+
 export function UserMenu({ user, onSignOut, onSignIn }) {
+  const isDisabled = !user;
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -29,10 +31,10 @@ export function UserMenu({ user, onSignOut, onSignIn }) {
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         {/* Add more menu items as needed */}
-        <DropdownMenuItem asChild>
+        <DropdownMenuItem asChild disabled={isDisabled}>
           <Link href='/dashboard'>Dashboard</Link>
         </DropdownMenuItem>
-        <DropdownMenuItem asChild>
+        <DropdownMenuItem asChild disabled={isDisabled}>
           <Link href='/settings'>Settings</Link>
         </DropdownMenuItem>
         <DropdownMenuItem onClick={user ? onSignOut : onSignIn}>{user ? 'Sign out' : 'Log in'}</DropdownMenuItem>

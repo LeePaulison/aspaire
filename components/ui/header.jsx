@@ -4,16 +4,12 @@ import { useSession, signIn, signOut } from 'next-auth/react';
 // Next JS Components
 import Image from 'next/image';
 import Link from 'next/link';
-// Shadcn UI components
-import { Button } from '@/components/ui/button'
 // Theme toggle component
 import { ModeToggle as ThemeToggle } from '@/components/themeToggle'
 import { UserMenu } from '@/components/userMenu';
 
 export function Header() {
-  const { data: session, status } = useSession();
-
-  console.log('[Header] session:', session);
+  const { data: session } = useSession();
 
   return (
     <header className='container flex flex-row items-center justify-between w-full py-2 px-4 border-b border-b-muted'>
