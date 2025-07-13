@@ -11,6 +11,9 @@ const server = new ApolloServer({
   resolvers,
 });
 
+// Create a Next.js route handler for the Apollo Server
+// This will handle both GET and POST requests
+const handler = startServerAndCreateNextHandler(server);
 // Export the Next.js route handler
-export const GET = startServerAndCreateNextHandler(server);
-export const POST = startServerAndCreateNextHandler(server);
+export const GET = handler;
+export const POST = handler;
