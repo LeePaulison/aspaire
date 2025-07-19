@@ -1,4 +1,7 @@
-import { getOrCreatePreferencesForUser, createOrFetchUser } from '@/services/userService';
+import { createUserAction } from '@/contracts/actions/user/createUser';
+import { getOrCreateUserByAuthAction } from '@/contracts/actions/user/getOrCreateUserByAuth';
+import { getUserById } from '@/dal/user';
+import { getOrCreatePreferencesForUser } from '@/services/userService';
 import { getResumesByUserId } from '@/dal/resumes';
 
 export const userResolvers = {
@@ -7,32 +10,30 @@ export const userResolvers = {
       return await getOrCreatePreferencesForUser(parent.id);
     },
     resumes: async (parent, { limit, offset }) => {
-      const safeLimit = Math.max(1, Math.min(limit, 50)); // Limit to a maximum of 50 resumes
-      const safeOffset = Math.max(offset, 0); // Ensure offset is non-negative
+      const safeLimit = Math.max(1, Math.min(limit ?? 10, 50));
+      const safeOffset = Math.max(offset ?? 0, 0);
       return await getResumesByUserId(parent.id, safeLimit, safeOffset);
     },
   },
 
   Query: {
     user: async (_, { id }) => {
-      const user = await createOrFetchUser({ id });
+      const user = await getUserById(id);
       if (!user) {
         throw new Error(`User with ID ${id} does not exist.`);
       }
       return user;
     },
-    userByAuth: async (_, { authProviderId, authProvider, email, name }) => {
-      const user = await createOrFetchUser({ authProviderId, authProvider, email, name });
-      if (!user) {
-        throw new Error(`User with authProviderId ${authProviderId} and authProvider ${authProvider} does not exist.`);
-      }
-      return user;
+
+    userByAuth: async (_, args) => {
+      return await getOrCreateUserByAuthAction(args);
     },
   },
 
   Mutation: {
     createUser: async (_, { input }) => {
-      return await createOrFetchUser(input);
+      console.log('[User Resolvers] Creating user with input:', input);
+      return await createUserAction(input);
     },
   },
 };

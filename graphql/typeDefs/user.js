@@ -15,7 +15,6 @@ enum AuthProvider {
   }
 
   input CreateUserInput {
-    id: ID!
     authProviderId: String!
     authProvider: AuthProvider!
     email: String!

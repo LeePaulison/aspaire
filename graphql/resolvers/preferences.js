@@ -1,4 +1,5 @@
-import { setPreferences, getPreferencesByUserId } from '@/dal/preferences';
+import { setPreferencesAction } from '@/contracts/actions/preferences/setPreferences';
+import { getPreferencesByUserId } from '@/dal/preferences';
 
 export const preferencesResolvers = {
   Query: {
@@ -8,7 +9,7 @@ export const preferencesResolvers = {
   },
   Mutation: {
     setPreferences: async (_, { input }) => {
-      return await setPreferences(input);
+      return await setPreferencesAction(input);
     },
   },
 };
