@@ -3,8 +3,9 @@ import './globals.css';
 // Custom Providers
 import { AppProvider } from '@/components/providers/appProvider';
 // UI Components
-import { Header } from '@/components/ui/header';
-import { Footer } from '@/components/ui/footer';
+import { Header } from '@/components/header';
+import { Footer } from '@/components/footer';
+import { Breadcrumb } from '@/components/breadcrumb';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -38,6 +39,8 @@ export default function RootLayout({ children }) {
           <div className='flex flex-col h-screen overflow-x-hidden'>
             {/* Header */}
             <Header />
+            {/* Breadcrumb */}
+            <Breadcrumb />
             {/* Main content */}
             <main className='flex-grow overflow-y-auto'>
               <section className='container h-full'>{children}</section>
