@@ -4,14 +4,14 @@ enum AuthProvider {
   GOOGLE
 }
 
-  type User {
+  extend type User {
     id: ID!
     authProviderId: String!
     authProvider: AuthProvider!
     email: String!
     name: String
     preferences: Preferences
-    resumes(limit: Int!, offset: Int!): [Resume]
+    resumes(limit: Int = 10, offset: Int = 0): [Resume]
   }
 
   input CreateUserInput {
@@ -20,10 +20,6 @@ enum AuthProvider {
     email: String!
     name: String
     preferences: PreferencesInput
-  }
-
-  extend type Query {
-    userByAuth(authProviderId: String!, authProvider: AuthProvider!, email: String!, name: String): User
   }
 
   extend type Mutation {

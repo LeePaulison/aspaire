@@ -7,9 +7,14 @@ import { getResumesByUserId } from '@/dal/resumes';
 export const userResolvers = {
   User: {
     preferences: async (parent) => {
+      console.log('[User Resolvers] Fetching preferences for user:', parent.id);
       return await getOrCreatePreferencesForUser(parent.id);
     },
-    resumes: async (parent, { limit, offset }) => {
+    resumes: async (parent, args) => {
+      console.log('[User Resolvers] Fetching resumes for user:', parent.id);
+      console.log('[User Resolvers] Arguments:', args);
+
+      const { limit, offset } = args;
       const safeLimit = Math.max(1, Math.min(limit ?? 10, 50));
       const safeOffset = Math.max(offset ?? 0, 0);
       return await getResumesByUserId(parent.id, safeLimit, safeOffset);
