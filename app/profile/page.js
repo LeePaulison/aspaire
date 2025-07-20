@@ -16,10 +16,14 @@ let rerenderCount = 0;
 export default function ProfilePage() {
   const user = useUserStore((s) => s.user, shallow);
   const preferences = usePreferencesStore((s) => s.preferences, shallow);
-  const resumes = useResumesStore((s) => s.resumes, shallow);
+  const resumes = useResumesStore.getState().resumes;
   console.log('[ProfilePage] User:', user);
   console.log('[ProfilePage] Preferences:', preferences);
   console.log('[ProfilePage] Resumes:', resumes);
+  console.log('✅ Resumes length:', resumes.length);
+  console.log('🔍 resumes[0]:', resumes[0]);
+  console.log('📎 resumes[0].originalFilename:', resumes[0]?.originalFilename);
+
   return (
     <>
       <section className='mt-8'>
@@ -72,16 +76,18 @@ export default function ProfilePage() {
           <h2 className='text-xl font-semibold'>Resumes</h2>
           <ResumeDialog />
         </div>
-        <p>
-          {resumes.length > 0
-            ? resumes.map((resume) => (
-                <div key={resume.id}>
-                  <h3 className='font-semibold'>{resume.title}</h3>
-                  <p>{resume.experience} years of experience</p>
-                </div>
-              ))
-            : 'No resumes available'}
-        </p>
+        {resumes.length > 0
+          ? resumes.map((resume, index) => (
+              <div key={index} className='p-4 border rounded-lg mb-4'>
+                <h3 className='text-lg font-semibold'>{resume.originalFilename}</h3>
+                <p className='text-sm text-gray-600'>{resume.description || 'No description provided'}</p>
+                <p className='text-xs text-gray-500'>Source: {resume.sourceType}</p>
+                <p className='text-xs text-gray-500'>Created: {new Date(resume.createdAt).toLocaleDateString()}</p>
+                <p className='text-xs text-gray-500'>Updated: {new Date(resume.updatedAt).toLocaleDateString()}</p>
+                <hr className='my-4' />
+              </div>
+            ))
+          : 'No resumes available'}
       </section>
     </>
   );

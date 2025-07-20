@@ -22,7 +22,7 @@ export async function GET(req) {
   const signedUrl = await getSignedUrl(
     s3,
     new GetObjectCommand({
-      Bucket: 'aspaire-resumes', // replace with your bucket name
+      Bucket: 'aspaire-resumes',
       Key: key,
     }),
     { expiresIn: 60 * 5 }

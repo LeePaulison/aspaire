@@ -3,6 +3,8 @@ import { useLazyQuery } from '@apollo/client';
 import { GET_USER_BY_AUTH } from '@/graphql/queries/user';
 import { useUserStore } from '@/store/userStore';
 import { usePreferencesStore } from '@/store/preferencesStore';
+import { useResumesStore } from '@/store/resumesStore';
+// Next Auth imports
 import { useSession } from 'next-auth/react';
 /**
  * Custom hook to fetch and store user data based on authentication session.
@@ -12,6 +14,7 @@ export function useFetchAndStoreUser() {
   const user = useUserStore((s) => s.user);
   const setUser = useUserStore((s) => s.setUser);
   const setPreferences = usePreferencesStore((s) => s.setPreferences);
+  const setResumes = useResumesStore((s) => s.addResumes);
 
   const [fetchUser, { loading, error, data }] = useLazyQuery(GET_USER_BY_AUTH);
   const { data: sessionData } = useSession();
@@ -48,11 +51,24 @@ export function useFetchAndStoreUser() {
 
       setUser(enrichedUser);
 
+      // Log the Preferences fetched
+      console.log(`[useFetchAndStoreUser] Stored preferences for user: ${dbUser.id}, Preferences:`, dbUser.preferences);
       if (dbUser.preferences) {
         setPreferences(dbUser.preferences);
       }
+
+      // Log the number of resumes fetched
+      console.log(`[useFetchAndStoreUser] Stored ${dbUser.resumes.length} resumes`);
+
+      if (dbUser.resumes) {
+        console.log('[useFetchAndStoreUser] Resumes:', dbUser.resumes);
+        console.log('🚨 Raw dbUser.resumes:', dbUser.resumes);
+        console.log('🔍 Is nested?', Array.isArray(dbUser.resumes[0]));
+
+        setResumes(dbUser.resumes);
+      }
     }
-  }, [data, setUser, setPreferences, sessionData]);
+  }, [data, setUser, setPreferences, setResumes, sessionData]);
 
   return {
     loading,
