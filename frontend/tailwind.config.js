@@ -1,6 +1,10 @@
 // File: tailwind.config.js
 // This file configures Tailwind CSS for a Next.js project with custom themes and typography.
-module.exports = {
+
+/** @type {import('tailwindcss').Config} */
+import typography from '@tailwindcss/typography';
+
+const config = {
   content: [
     './pages/**/*.{js,ts,jsx,tsx,mdx}',
     './components/**/*.{js,ts,jsx,tsx,mdx}',
@@ -70,5 +74,7 @@ module.exports = {
       }),
     },
   },
-  plugins: [require('@tailwindcss/typography')],
+  plugins: [typography],
 };
+
+export default config;
