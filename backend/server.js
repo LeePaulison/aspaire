@@ -2,20 +2,21 @@
 import { createServer } from 'http';
 import { createYoga, createSchema } from 'graphql-yoga';
 import { WebSocketServer } from 'ws';
+import { useServer } from 'graphql-ws/lib/use/ws';
 import jwt from 'jsonwebtoken';
-import { createRequire } from 'module';
 import dotenv from 'dotenv';
-dotenv.config();
+import path from 'path';
+
+const envPath = path.resolve(process.cwd(), '../.env');
+dotenv.config({ path: envPath });
+
 import { typeDefs } from './schema/index.js';
 import { resolvers } from './resolvers/index.js';
-
-const require = createRequire(import.meta.url);
-const { useServer } = require('graphql-ws/use/ws');
+import { routeOpenAI } from './routes/openai.js';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'dev-secret';
-if (!JWT_SECRET) {
-  throw new Error('JWT_SECRET is not defined. Please set it in your environment variables.');
-}
+console.log('JWT Secret:', JWT_SECRET ? 'Loaded' : 'Not Loaded');
+console.log('OpenAI API Key:', process.env.OPENAI_API_KEY ? 'Loaded' : 'Not Loaded');
 const schema = createSchema({ typeDefs, resolvers });
 
 function getUserFromRequest(req) {
@@ -38,7 +39,14 @@ const yoga = createYoga({
   },
 });
 
-const server = createServer(yoga);
+// const server = createServer(yoga);
+const server = createServer(async (req, res) => {
+  if (req.url?.startsWith('/openai')) {
+    return await routeOpenAI(req, res);
+  }
+
+  return yoga(req, res);
+});
 
 const wsServer = new WebSocketServer({
   server,

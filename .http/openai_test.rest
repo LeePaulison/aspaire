@@ -1,0 +1,33 @@
+### OpenAI Completion Test
+POST http://localhost:4000/openai/complete
+Content-Type: application/json
+
+{
+  "prompt": "Summarize the pros and cons of working from home."
+}
+
+### OpenAI Stream Test
+POST http://localhost:4000/openai/stream
+Content-Type: application/json
+Accept: text/event-stream
+
+{
+  "prompt": "Write a haiku about developers."
+}
+
+### OpenAI Cover Letter Generation Test
+POST http://localhost:4000/openai/cover-letter
+Content-Type: application/json
+
+{
+  "jobDescription": "We’re hiring a React developer with GraphQL experience.",
+  "resumeContent": "Senior frontend dev with React/Next.js and GraphQL background."
+}
+
+### OpenAI Suggestion Generation Test
+POST http://localhost:4000/openai/suggest
+Content-Type: application/json
+
+{
+  "resume": "Frontend developer with React, Next.js, GraphQL experience. Interested in remote roles in SaaS companies."
+}

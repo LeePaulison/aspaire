@@ -4,6 +4,7 @@ import { preferencesTypeDefs } from './preferences.js';
 import { resumeTypeDefs } from './resumes.js';
 import { remotiveTypeDefs } from './remotive.js';
 import { serpTypeDefs } from './serp.js';
+import { openAITypeDefs } from './openai.js';
 
 export const typeDefs = [
   rootTypeDefs,
@@ -12,4 +13,5 @@ export const typeDefs = [
   resumeTypeDefs,
   remotiveTypeDefs,
   serpTypeDefs,
+  openAITypeDefs,
 ];
