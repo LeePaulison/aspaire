@@ -1,23 +1,31 @@
-import { OpenAI } from 'openai';
+import { generateCoverLetter } from '../services/generators/coverLetter.js';
+import { suggestSearchTerms } from '../services/generators/suggest.js';
+import { summarizeResume } from '../services/generators/resumeSummary.js';
+import { interviewChat } from '../services/generators/interviewChat.js';
+import { streamChat } from '../services/generators/streamChat.js';
+import { streamInterviewChat } from '../services/generators/interviewChatStream.js';
 
 export const openAIResolvers = {
   Subscription: {
     openAIStream: {
-      subscribe: async function* (_, { prompt }) {
-        const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY }); // ✅ Lazy init
-        const stream = await openai.chat.completions.create({
-          model: 'gpt-4o',
-          messages: [{ role: 'user', content: prompt }],
-          stream: true,
-        });
-
-        for await (const chunk of stream) {
-          const content = chunk.choices?.[0]?.delta?.content;
-          if (content) yield { openAIStream: { content, done: false } };
-        }
-
-        yield { openAIStream: { content: 'Stream Completed Successfully', done: true } };
-      },
+      subscribe: (_, { prompt }) => streamChat(prompt),
+    },
+    interviewChatStream: {
+      subscribe: (_, { message, history }) => streamInterviewChat(message, history),
+    },
+  },
+  Mutation: {
+    generateCoverLetter: async (_, { jobDescription, resumeContent }) => {
+      return await generateCoverLetter({ jobDescription, resumeContent });
+    },
+    suggestSearchTerms: async (_, { resume }) => {
+      return await suggestSearchTerms(resume);
+    },
+    resumeSummary: async (_, { resume }) => {
+      return await summarizeResume(resume);
+    },
+    interviewChat: async (_, { message, history }) => {
+      return await interviewChat(message, history);
     },
   },
 };
