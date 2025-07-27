@@ -1,0 +1,29 @@
+### Create User via Auth
+POST http://localhost:4000/graphql
+Content-Type: application/json
+
+{
+  "query": "mutation CreateUser($input: CreateUserInput!) { createUserWithAuth(input: $input) { id email name authProvider authProviderId } }",
+  "variables": {
+    "input": {
+      "authProviderId": "auth0|abc123",
+      "authProvider": "GITHUB",
+      "email": "lee@example.com",
+      "name": "Lee Dev"
+    }
+  }
+}
+
+### Fetch User via Auth
+POST http://localhost:4000/graphql
+Content-Type: application/json
+
+{
+  "query": "query GetUserByAuth($authProviderId: String!, $authProvider: AuthProvider!, $email: String!, $name: String) { userByAuth(authProviderId: $authProviderId, authProvider: $authProvider, email: $email, name: $name) { id email name authProvider authProviderId } }",
+  "variables": {
+    "authProviderId": "auth0|abc123",
+    "authProvider": "GITHUB",
+    "email": "lee@example.com",
+    "name": "Lee Dev"
+  }
+}

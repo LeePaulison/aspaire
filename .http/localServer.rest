@@ -1,0 +1,27 @@
+### Local GraphQL Server Test
+POST http://localhost:4000/graphql
+Content-Type: application/json
+
+{
+  "query": "query { hello }"
+}
+
+### Test Remotive API passthrough
+POST http://localhost:4000/graphql
+Content-Type: application/json
+
+{
+  "query": "query { remotiveJobs { id title company_name salary candidate_required_location } }"
+}
+
+
+### Test SerpAPI search
+POST http://localhost:4000/graphql
+Content-Type: application/json
+
+{
+  "query": "query($q: String!) { serpSearch(query: $q) }",
+  "variables": {
+    "q": "Frontend Developer Remote"
+  }
+}

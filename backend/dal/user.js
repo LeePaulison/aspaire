@@ -1,15 +1,6 @@
-import { getDbClient } from '../lib/neon/db.js';
+import { pool } from '../db/pool.js';
 
-// This file contains functions to interact with the users table in the database.
-
-export async function createUser(user) {
-  // Validate user input
-  if (!user.email || !user.name) {
-    throw new Error('Cannot create user without email and name.');
-  }
-
-  const client = await getDbClient();
-
+export async function createUserWithAuth(userInput) {
   try {
     const query = `
       INSERT INTO users (auth_provider_id, auth_provider, email, name)
@@ -22,9 +13,9 @@ export async function createUser(user) {
       RETURNING *;
     `;
 
-    const values = [user.authProviderId, user.authProvider, user.email, user.name];
+    const values = [userInput.authProviderId, userInput.authProvider, userInput.email, userInput.name];
 
-    const result = await client.query(query, values);
+    const result = await pool.query(query, values);
 
     const row = result.rows[0];
 
@@ -37,20 +28,19 @@ export async function createUser(user) {
       email: row.email,
       name: row.name,
     };
-  } finally {
-    await client.end();
+  } catch (error) {
+    console.error('Error creating user with auth:', error);
+    throw error;
   }
 }
 
-export async function getUserByAuth(authProviderId, authProvider) {
-  const client = await getDbClient();
-
+export async function getUserByAuth(authProviderId, authProvider, email, name) {
   try {
     const query = `
       SELECT * FROM users
-      WHERE auth_provider_id = $1 AND auth_provider = $2;
+      WHERE auth_provider_id = $1 AND auth_provider = $2 AND email = $3 AND name = $4;
     `;
-    const result = await client.query(query, [authProviderId, authProvider]);
+    const result = await pool.query(query, [authProviderId, authProvider, email, name]);
     const row = result.rows[0];
 
     if (!row) return null;
@@ -62,20 +52,19 @@ export async function getUserByAuth(authProviderId, authProvider) {
       email: row.email,
       name: row.name,
     };
-  } finally {
-    await client.end();
+  } catch (error) {
+    console.error('Error getting user by auth:', error);
+    throw error;
   }
 }
 
 export async function getUserById(id) {
-  const client = await getDbClient();
-
   try {
     const query = `
       SELECT * FROM users
       WHERE id = $1;
     `;
-    const result = await client.query(query, [id]);
+    const result = await pool.query(query, [id]);
     const row = result.rows[0];
 
     if (!row) return null;
@@ -90,7 +79,5 @@ export async function getUserById(id) {
   } catch (error) {
     console.error('Error getting user:', error);
     throw error;
-  } finally {
-    await client.end();
   }
 }

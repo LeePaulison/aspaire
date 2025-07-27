@@ -1,0 +1,3 @@
+### Get remote jobs for "React Developer"
+GET https://remotive.io/api/remote-jobs?search=react
+Accept: application/json

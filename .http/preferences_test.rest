@@ -1,0 +1,31 @@
+// This file contains a GraphQL query to fetch user preferences.
+### Fetch User Preferences
+POST http://localhost:4000/graphql
+Content-Type: application/json
+
+{
+  "query": "query GetPreferences { preferences(user_id: \"ced44b24-543c-4292-adc0-82a0d5403a37\") { userId preferredLocations remote industries salaryMin salaryMax notificationsEnabled paginationLimit preferredTitles preferredSkills salaryCurrency } }"
+}
+
+### Set User Preferences
+POST http://localhost:4000/graphql
+Content-Type: application/json
+
+{
+  "query": "mutation SetPreferences($input: PreferencesInput!) { setPreferences(input: $input) { userId preferredLocations remote industries salaryMin salaryMax notificationsEnabled paginationLimit preferredTitles preferredSkills salaryCurrency createdAt updatedAt } }",
+  "variables": {
+    "input": {
+      "userId": "ced44b24-543c-4292-adc0-82a0d5403a37",
+      "preferredLocations": ["Remote", "Austin"],
+      "remote": true,
+      "industries": ["Tech", "AI"],
+      "salaryMin": 105000,
+      "salaryMax": 200000,
+      "notificationsEnabled": true,
+      "paginationLimit": 15,
+      "preferredTitles": ["Senior Developer"],
+      "preferredSkills": ["JavaScript", "React"],
+      "salaryCurrency": "USD"
+    }
+  }
+}

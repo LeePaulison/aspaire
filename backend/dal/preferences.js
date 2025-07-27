@@ -1,8 +1,6 @@
-import { getDbClient } from '../lib/neon/db';
+import { pool } from '../db/pool.js';
 
 export async function setPreferences(data) {
-  const client = await getDbClient();
-
   try {
     const query = `
         INSERT INTO preferences (
@@ -48,7 +46,7 @@ export async function setPreferences(data) {
       data.salaryCurrency,
     ];
 
-    const result = await client.query(query, values);
+    const result = await pool.query(query, values);
 
     const row = result.rows[0];
     return {
@@ -69,21 +67,17 @@ export async function setPreferences(data) {
   } catch (error) {
     console.error('Error setting preferences:', error);
     throw error;
-  } finally {
-    await client.end();
   }
 }
 
 export async function getPreferencesByUserId(userId) {
-  const client = await getDbClient();
-
   try {
     const query = `
       SELECT * FROM preferences
       WHERE user_id = $1;
     `;
 
-    const result = await client.query(query, [userId]);
+    const result = await pool.query(query, [userId]);
     const row = result.rows[0];
 
     if (!row) return null;
@@ -106,7 +100,5 @@ export async function getPreferencesByUserId(userId) {
   } catch (error) {
     console.error('Error getting preferences:', error);
     throw error;
-  } finally {
-    await client.end();
   }
 }

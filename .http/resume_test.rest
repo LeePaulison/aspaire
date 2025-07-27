@@ -1,0 +1,76 @@
+// Resume Testing
+// This file contains tests for the resume functionality of the application.
+
+### Test Pasted Resume Creation
+POST http://localhost:4000/api/graphql
+Content-Type: application/json
+
+{
+  "query": "mutation CreatePastedResume($input: CreatePastedResumeInput!) { createPastedResume(input: $input) { id description sourceType pastedContent createdAt } }",
+  "variables": {
+    "input": {
+      "userId": "ced44b24-543c-4292-adc0-82a0d5403a37",
+      "pastedContent": "This is a test resume pasted via GraphQL.",
+      "sourceType": "PASTE",
+      "description": "Test resume",
+      "partial": false
+    }
+  }
+}
+
+### Test Pasted Resume Creation
+POST http://localhost:4000/api/graphql
+Content-Type: application/json
+
+{
+  "query": "mutation CreatePastedResume($input: CreatePastedResumeInput!) { createPastedResume(input: $input) { id description sourceType pastedContent createdAt } }",
+  "variables": {
+    "input": {
+      "userId": "ced44b24-543c-4292-adc0-82a0d5403a37",
+      "pastedContent": "Experienced full-stack developer with a focus on clean, maintainable code and scalable architectures. Skilled in JavaScript, Node.js, GraphQL, and PostgreSQL.",
+      "sourceType": "PASTE",
+      "description": "Senior Full-Stack Resume",
+      "partial": false
+    }
+  }
+}
+
+
+### Test Get Resumes by User
+POST http://localhost:4000/api/graphql
+Content-Type: application/json
+
+{
+  "query": "query GetResumes($userId: ID!) { resumesByUser(userId: $userId, limit: 10, offset: 0) { id description sourceType createdAt } }",
+  "variables": {
+    "userId": "ced44b24-543c-4292-adc0-82a0d5403a37"
+  }
+}
+
+
+### Test Resume Update
+POST http://localhost:4000/api/graphql
+Content-Type: application/json
+
+{
+  "query": "mutation UpdateResume($id: ID!, $input: UpdateResumeInput!) { updateResume(id: $id, input: $input) { id description partial updatedAt } }",
+  "variables": {
+    "id": "a8057a5c-05d4-4d6e-b6e8-3c1f23e87ea2",
+    "input": {
+      "description": "Updated resume description via GraphQL",
+      "partial": true
+    }
+  }
+}
+
+
+### Test Resume Deletion
+POST http://localhost:4000/api/graphql
+Content-Type: application/json
+
+{
+  "query": "mutation DeleteResume($id: ID!) { deleteResume(id: $id) { success message } }",
+  "variables": {
+    "id": "1f6168f2-a8b1-495e-9f27-a9cabed0d506"
+  }
+}

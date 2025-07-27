@@ -1,11 +1,6 @@
-import { getDbClient } from '@/lib/neon/db';
+import { pool } from '../db/pool.js';
 
-// --------------------------------------------
-// Create File Resume
-// --------------------------------------------
 export async function createFileResume(resume) {
-  const client = await getDbClient();
-
   try {
     const query = `
       INSERT INTO resumes (
@@ -36,23 +31,16 @@ export async function createFileResume(resume) {
       resume.partial ?? false,
     ];
 
-    const result = await client.query(query, values);
+    const result = await pool.query(query, values);
     const row = result.rows[0];
     return mapResumeRow(row);
   } catch (error) {
     console.error('Error creating file resume:', error);
     throw error;
-  } finally {
-    await client.end();
   }
 }
 
-// --------------------------------------------
-// Create Pasted Resume
-// --------------------------------------------
 export async function createPastedResume(resume) {
-  const client = await getDbClient();
-
   try {
     const query = `
       INSERT INTO resumes (
@@ -69,23 +57,16 @@ export async function createPastedResume(resume) {
 
     const values = [resume.userId, resume.pastedContent, resume.sourceType, resume.description, resume.partial ?? true];
 
-    const result = await client.query(query, values);
+    const result = await pool.query(query, values);
     const row = result.rows[0];
     return mapResumeRow(row);
   } catch (error) {
     console.error('Error creating pasted resume:', error);
     throw error;
-  } finally {
-    await client.end();
   }
 }
 
-// --------------------------------------------
-// Get Single Resume
-// --------------------------------------------
 export async function getResumeById(id) {
-  const client = await getDbClient();
-
   console.log('[getResumeById] DB Client:', client);
   console.log('[getResumeById] Fetching resume with ID:', id);
 
@@ -94,7 +75,7 @@ export async function getResumeById(id) {
       SELECT * FROM resumes
       WHERE id = $1;
     `;
-    const result = await client.query(query, [id]);
+    const result = await pool.query(query, [id]);
     const row = result.rows[0];
     if (!row) return null;
 
@@ -102,17 +83,10 @@ export async function getResumeById(id) {
   } catch (error) {
     console.error('Error getting resume:', error);
     throw error;
-  } finally {
-    await client.end();
   }
 }
 
-// --------------------------------------------
-// Get All Resumes for User
-// --------------------------------------------
 export async function getResumesByUserId(userId, limit = 10, offset = 0) {
-  const client = await getDbClient();
-
   try {
     const query = `
       SELECT * FROM resumes
@@ -121,22 +95,15 @@ export async function getResumesByUserId(userId, limit = 10, offset = 0) {
       LIMIT $2 OFFSET $3;
     `;
 
-    const result = await client.query(query, [userId, limit, offset]);
+    const result = await pool.query(query, [userId, limit, offset]);
     return result.rows.map(mapResumeRow);
   } catch (error) {
     console.error('Error getting resumes by user ID:', error);
     throw error;
-  } finally {
-    await client.end();
   }
 }
 
-// --------------------------------------------
-// Update Resume (Partial Fields)
-// --------------------------------------------
 export async function updateResume(id, resume) {
-  const client = await getDbClient();
-
   try {
     const fields = [];
     const values = [];
@@ -163,35 +130,25 @@ export async function updateResume(id, resume) {
 
     values.push(id);
 
-    const result = await client.query(query, values);
+    const result = await pool.query(query, values);
     const row = result.rows[0];
     return mapResumeRow(row);
   } catch (error) {
     console.error('Error updating resume:', error);
     throw error;
-  } finally {
-    await client.end();
   }
 }
-
-// --------------------------------------------
-// Delete Resume
-// --------------------------------------------
 export async function deleteResume(id) {
-  const client = await getDbClient();
-
   try {
     const query = `
       DELETE FROM resumes
       WHERE id = $1;
     `;
-    await client.query(query, [id]);
+    await pool.query(query, [id]);
     return { success: true, message: 'Resume deleted successfully' };
   } catch (error) {
     console.error('Error deleting resume:', error);
     throw error;
-  } finally {
-    await client.end();
   }
 }
 
