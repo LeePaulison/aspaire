@@ -53,18 +53,17 @@ AspAIre fits into the larger ecosystem under the **sAIgely** brand—your suite 
 
 AspAIre is part of the growing **sAIgely** ecosystem:
 
-> sAIgely – Your intelligent AI companion for work and life.
->
+> sAIgely – Your intelligent AI companion for work and life.  
 > **AspAIre** – _Your AI-powered career and job search assistant._
 
 ---
 
 ### Visual Identity Suggestions
 
-- Color palette:
+- **Color palette**:
   - Blues/greens for trust and technology.
   - Pops of vibrant colors for energy and ambition.
-- Logo concept:
+- **Logo concept**:
   - Subtle AI iconography (nodes, circuits).
   - Upward motion symbolizing career growth.
 
@@ -72,394 +71,123 @@ AspAIre is part of the growing **sAIgely** ecosystem:
 
 ## 3. Features & Functionality
 
----
+### ✅ Core MVP (Phase 1)
 
-### 3.1 Core MVP Features
-
-### ✅ Job Search Aggregation
-
-- Integrations:
-  - Remotive API
-  - SerpAPI for broad job searches
-- Aggregates job listings into unified feed:
-  - Title
-  - Company
-  - Location
-  - Tags
-  - Salary if available
-- Supports:
-  - Local-only
-  - Hybrid
-  - Remote
-- AI summarization for long descriptions.
-
----
-
-### ✅ Smart Job Matching
-
-- Users upload/paste resume.
-- System parses:
-  - Skills
-  - Titles
-  - Industries
-- AI suggests jobs matching:
-  - User’s background
-  - Preferred roles
-  - Industry focus
-- Learns from user feedback.
-
----
-
-### ✅ Application Tracking & Assistance
-
-- Save jobs to pipeline stages:
-  - Saved
-  - Applied
-  - Interviewing
-  - Offer
-- Add personal notes per job.
-- Receive reminders for:
-  - Follow-ups
-  - Application deadlines
-- AI helps:
-  - Generate tailored cover letters.
-  - Draft resume bullets for specific jobs.
-
----
-
-### ✅ Daily Search Query Sets
-
-- Multiple daily sets to:
-  - Rotate SerpAPI queries
-  - Manage free-tier API limits
-- Users can:
-  - Define preferred locations
-  - Choose remote/hybrid/on-site
-- Automatic daily searches:
-  - E.g. 2 AM UTC
-- Deduplicates overlapping jobs.
-- Optional AI summarization for new listings.
-- Graceful handling of API limits:
-  > “Daily search paused due to API limits. Check back tomorrow for fresh results.”
-
----
-
-### ✅ Suggest Search Terms Based on Resume
-
-- After resume upload:
-  - Parse extracted data:
-    - Skills
-    - Technologies
-    - Titles
-    - Industries
-- AI suggests additional search terms:
-  - Alternative job titles
-  - Related keywords
-- Example:
-  ```
-  Resume mentions: React, TypeScript, Single Page Apps
-  Suggested searches:
-    - Frontend Engineer Orlando
-    - React Developer remote
-    - SPA Developer hybrid
-    - TypeScript Developer California
-
-  ```
-- Users can:
-  - Approve
-  - Edit
-  - Discard
-- Approved terms integrate into:
-  - Daily search queries
-  - Personalized job discovery.
-
----
-
-### ✅ AI-Powered Summaries
-
-- Summarize long job postings into quick scans.
-- Highlight:
-  - Key responsibilities
-  - Required skills
-  - Notable perks or requirements
-
----
-
-### ✅ Resume Upload & Parsing
-
-- Users upload resume files:
-  - PDF, DOCX, etc.
-- Parses:
-  - Skills
-  - Industries
-  - Locations (for locale awareness)
-- Secure storage:
-  - Vercel Blob Storage or alternatives (AWS S3, GCP Storage)
-  - Encrypted at rest
-  - Signed URLs for secure downloads
-
----
-
-### ✅ Cover Letter Generation
-
-- AI drafts tailored cover letters for:
-  - Specific jobs
-  - Companies
-- Customizable tone and style.
-
----
-
----
-
-### 3.2 Late Phase 1 Features
-
-### ✅ Market Insights & Financial Research
-
-- Salary benchmarks:
-  - By role
-  - By region
-  - By skill
-- Market trends:
-  - Demand for specific technologies
-  - Industry growth or decline
-- Aim for ~60/40 split:
-  - Core salary data in Phase 1
-  - Advanced analytics in Phase 2
-
----
-
----
-
-### 3.3 Phase 2 Future Integrations
-
-### ✅ LinkedIn Integration
-
-- Job listings
-- Company data
-- Application tracking
-- Requires:
-  - API partnerships
-  - Commercial licensing considerations
-
----
-
-### ✅ Indeed Integration
-
-- Broader job coverage.
-- Integration via:
-  - Official APIs
-  - SerpAPI queries
-- Valuable for:
-  - Local roles
-  - Industry-specific searches
-
----
-
-### ✅ Other Platforms
-
-- Monster
-- AngelList
-- Dice
-- Glassdoor
-- CareerBuilder
-
----
-
-### ✅ Additional Data Providers
-
-- Salary and analytics integrations:
-  - Glassdoor APIs
-  - Levels.fyi
-  - U.S. BLS APIs
-
----
-
-### ✅ Multi-User Expansion
-
-- Support multiple users:
-  - Individual accounts
-  - Team dashboards
-  - SaaS opportunities
+- **Resume Upload & Parsing**
+  - Secure file upload (S3)
+  - Text extraction and formatting
+- **Cover Letter Generation**
+  - Tailored per-job using OpenAI
+- **Suggested Search Terms**
+  - AI parses resume to recommend roles, skills, industries
+- **Resume Summary**
+  - AI generates concise 2–3 sentence profile summaries
+- **Streaming AI Interaction**
+  - `interviewChatStream` supports token-based live reply
+- **GraphQL & REST Coverage**
+  - All OpenAI services available in both
+- **Preferences**
+  - PostgreSQL-backed storage of user job preferences
 
 ---
 
 ## 4. Technical Architecture
 
----
-
-### 4.1 High-Level Architecture
-
-- Frontend:
-  - Next.js
-  - Tailwind CSS
-  - shadcn/ui or Radix
-- Backend:
-  - Node.js
-  - Next.js API routes
-  - NextAuth.js for auth
-  - OpenAI GPT-4o for:
-    - Summaries
-    - Cover letters
-    - Search term suggestions
-- Data Layers:
-  - PostgreSQL → structured, relational data
-  - MongoDB → raw job listings and AI outputs
-  - Blob Storage → resumes and large files
-- Scheduling:
-  - Vercel Cron Jobs
-  - GitHub Actions
-- Monitoring:
-  - Sentry
-  - Logging for job ingestion and API usage
-
----
-
-### 4.2 Frontend Details
-
-- SSR for SEO
-- Responsive layout
-- Accessible design practices
-
----
-
-### 4.3 Backend Details
-
-- Flexible API routes for:
-  - Job searches
-  - Resume parsing
-  - Daily query execution
-- OpenAI integration:
-  - Token cost management
-  - Caching of AI results for efficiency
-
----
-
-### 4.4 Data Flows
-
-### Job Aggregation
-
-1. Daily scheduled searches via SerpAPI.
-2. Raw JSON stored in MongoDB.
-3. AI summarization.
-4. Transformed into unified schema for frontend.
-
----
-
-### Resume Parsing
-
-1. User uploads resume.
-2. NLP extracts:
-   - Skills
-   - Titles
-   - Locations
-3. AI generates:
-   - Smart search suggestions
-4. Save to Postgres for user-specific data.
-
----
-
-### Daily Search Queries
-
-- Rotated daily to:
-  - Maximize free-tier limits.
-  - Cover varied keywords and locations.
-- Dynamic query generation based on:
-  - User preferences.
-  - Smart term suggestions.
+- **Backend**: Node.js, Yoga (GraphQL), REST routes, OpenAI
+- **Frontend**: Next.js (planned integration)
+- **Data**:
+  - PostgreSQL → user data, preferences
+  - MongoDB (planned) → job listings, summaries
+  - Blob Storage (S3) → resumes
 
 ---
 
 ## 5. Security Considerations
 
-- Encryption for:
-  - Resume files in storage
-  - Sensitive user data in Postgres
-- Signed URLs for all downloads
-- Rate-limiting on:
-  - API endpoints
-  - AI usage
-- Strict authorization:
-  - Protect private user data
-- Privacy policies to comply with:
-  - GDPR
-  - CCPA (if applicable)
+- Signed S3 uploads
+- Encrypted PostgreSQL data
+- Rate-limiting and API key control for OpenAI
+- JWT-auth integration (under development)
 
 ---
 
 ## 6. Third-Party Integrations
 
-- Remotive API
-- SerpAPI
 - OpenAI
-- SendGrid or EmailJS for notifications
-- Vercel Blob Storage (under research)
+- S3-compatible Blob Storage
+- PostgreSQL (via Neon)
+- SerpAPI & Remotive (planned ingestion)
 
 ---
 
 ## 7. Cost Considerations
 
-- Remotive → Free API.
-- SerpAPI:
-  - Free tier with ~100 searches/month.
-  - Managed via rotating daily query sets.
-- OpenAI:
-  - Token usage budgeted for summaries and writing assistance.
-- Blob Storage costs for resumes.
-- Future costs:
-  - LinkedIn or premium salary data.
-  - Multi-user SaaS scaling.
+- OpenAI token usage controlled and stream-limited
+- S3/Blob pay-per-storage model
+- API rate tiers (SerpAPI, OpenAI)
 
 ---
 
 ## 8. Deployment & Operations
 
-- Hosting:
-  - Vercel
-- CI/CD:
-  - GitHub Actions
-- Error tracking:
-  - Sentry
-- Monitoring:
-  - Logs for:
-    - Ingestion success/failures
-    - API rate usage
-    - AI token consumption
+- Vercel (frontend)
+- GitHub Actions (CI/CD)
+- Local or Dockerized backend (Node.js)
 
 ---
 
 ## 9. Future Roadmap
 
-- Financial analytics dashboards.
-- Integration of premium job boards.
-- Employer/recruiter dashboards.
-- Advanced mobile optimization.
-- Monetization strategies:
-  - Premium features
-  - Subscription plans
-- Multi-user SaaS product evolution.
+---
+
+### 🧠 AI Personalization & Control
+
+- Support user-defined `customPrompt` overrides for chat interactions.
+- Add interview `style` presets:
+  - `behavioral`, `technical`, `casual`, etc.
+- Persist preferred prompt style in user Preferences.
+- Expose and persist `temperature` control in Preferences for OpenAI response tuning.
 
 ---
 
-## 10. Open Questions & Decisions (Finalized)
+### 💬 Advanced Interview Experience
 
-- **Resume Storage**
-  - Secure resume storage implemented for MVP.
-  - Vercel Blob Storage under research.
-- **Locale Handling**
-  - Pulled from resume or manually entered.
-  - Alerts users if missing locale.
-- **Financial Research**
-  - 60/40 split between Phase 1 and Phase 2.
-- **Branding**
-  - New names:
-    - sAIgely → platform umbrella
-    - AspAIre → job search product
-  - Discussion settled; branding included in this spec.
+- Extend `interviewChat` to include:
+  - Streaming with user persona injection.
+  - Real-time memory model for short-term context.
+  - Persistent history thread support.
+- Allow users to review, edit, or export chat sessions.
+
+---
+
+### 📊 Resume & Matching Intelligence
+
+- Add `resumeSummary` scoring and AI feedback.
+- Provide resume-specific suggestions (keywords, formatting tips).
+- Build job fit scoring system:
+  - Match resume content against job listings using AI.
+  - Rank matches based on relevance.
+
+---
+
+### 📦 Job Search Automation
+
+- Enhance saved search flows with daily auto-runs.
+- Store and rank AI-suggested search terms.
+- Add context-aware suggestions based on past application behavior.
+
+---
+
+### 🧰 Infrastructure & Monitoring
+
+- Log OpenAI usage per user (tokens, prompts, latency).
+- Show estimated API usage and cost projections.
+- Create admin dashboard for managing prompt templates and presets.
 
 ---
 
 # 🎯 **Summary**
 
-AspAIre stands poised to become an intelligent, user-focused job search assistant—moving beyond keyword searches to deliver genuinely personalized career guidance. Paired with sAIgely, it’s the next step in creating a cohesive suite of AI-powered tools for work and life.
+AspAIre stands poised to become an intelligent, user-focused job search assistant—moving beyond keyword searches to deliver genuinely personalized career guidance. Paired with the soon to be released sAIgely, it’s the next step in creating a cohesive suite of AI-powered tools for work and life.
 
 ---
