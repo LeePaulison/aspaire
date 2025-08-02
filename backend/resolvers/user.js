@@ -1,6 +1,7 @@
 import { getUserById, getUserByAuth } from '../dal/user.js';
 import { getOrCreatePreferencesForUser, createUser } from '../services/userService.js';
 import { getResumesByUserId } from '../dal/resumes.js';
+import { getJobListingsByUserId } from '../dal/jobListings.js';
 
 export const userResolvers = {
   User: {
@@ -13,6 +14,12 @@ export const userResolvers = {
       const safeLimit = Math.max(1, Math.min(limit ?? 10, 50));
       const safeOffset = Math.max(offset ?? 0, 0);
       return await getResumesByUserId(parent.id, safeLimit, safeOffset);
+    },
+    jobListings: async (parent, args) => {
+      const { limit, offset } = args;
+      const safeLimit = Math.max(1, Math.min(limit ?? 10, 50));
+      const safeOffset = Math.max(offset ?? 0, 0);
+      return await getJobListingsByUserId(parent.id, safeLimit, safeOffset);
     },
   },
 

@@ -29,5 +29,8 @@
   },
   "engines": {
     "node": ">=18.0.0"
+  },
+  "dependencies": {
+    "pg-format": "^1.0.4"
   }
 }

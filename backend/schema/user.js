@@ -12,6 +12,7 @@ export const userTypeDefs = /* GraphQL */ `
     name: String
     preferences: Preferences
     resumes(limit: Int = 10, offset: Int = 0): [Resume]
+    jobListings(limit: Int = 10, offset: Int = 0): [JobListing]
   }
 
   input CreateUserInput {

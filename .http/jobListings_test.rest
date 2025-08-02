@@ -1,0 +1,92 @@
+### Get all job listings
+POST http://localhost:4000/api/graphql
+Content-Type: application/json
+
+{
+  "query": "query { jobListings(limit: 5, offset: 0) { id title company source publication_date } }"
+}
+
+###
+
+### Get job listings by user
+POST http://localhost:4000/api/graphql
+Content-Type: application/json
+
+{
+  "query": "query($userId: ID!) { jobListingsByUser(user_id: $userId) { id title company } }",
+  "variables": {
+    "userId": "ced44b24-543c-4292-adc0-82a0d5403a37"
+  }
+}
+
+###
+
+### Get by external ID
+POST http://localhost:4000/api/graphql
+Content-Type: application/json
+
+{
+  "query": "query($externalId: String!, $source: sourceType!) { jobListingsByExternalId(external_id: $externalId, source: $source) { title company } }",
+  "variables": {
+    "externalId": "1234567890",
+    "source": "REMOTIVE"
+  }
+}
+
+###
+
+### Create a single job listing
+POST http://localhost:4000/api/graphql
+Content-Type: application/json
+
+{
+  "query": "mutation($input: JobListingInput!) { createJobListing(input: $input) { id title company source } }",
+  "variables": {
+    "input": {
+      "user_id": "ced44b24-543c-4292-adc0-82a0d5403a37",
+      "title": "Full Stack Dev",
+      "company": "Test Co",
+      "company_logo": null,
+      "location": "Remote",
+      "job_type": "full_time",
+      "salary": "$90k-$110k",
+      "publication_date": "2025-08-02T18:30:14Z",
+      "description": "A test job.",
+      "tags": ["React", "Node"],
+      "job_highlights": ["Remote", "Flexible Hours"],
+      "external_id": "1234567890",
+      "source": "REMOTIVE",
+      "raw_payload": { "mock": true }
+    }
+  }
+}
+
+###
+
+### Bulk insert job listings
+POST http://localhost:4000/api/graphql
+Content-Type: application/json
+
+{
+  "query": "mutation($jobListings: [JobListingInput!]!) { bulkCreateJobListings(jobListings: $jobListings) { id title } }",
+  "variables": {
+    "jobListings": [
+      {
+        "user_id": "ced44b24-543c-4292-adc0-82a0d5403a37",
+        "title": "AI Engineer",
+        "company": "OpenAI",
+        "company_logo": null,
+        "location": "San Francisco",
+        "job_type": "full_time",
+        "salary": "$140k+",
+        "publication_date": "2025-07-25T12:00:00Z",
+        "description": "Join our AI team.",
+        "tags": ["AI", "Machine Learning"],
+        "job_highlights": ["Innovative", "Cutting-edge"],
+        "external_id": "OPENAI123",
+        "source": "SERPAPI",
+        "raw_payload": { "mock": true }
+      }
+    ]
+  }
+}
