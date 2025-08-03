@@ -1,3 +1,5 @@
+import { makeFallbackId } from '../../lib/makeFallbackId.js';
+
 export async function fetchSerpAPIJobs(userId, { search = '', location = '' }) {
   if (!process.env.SERP_API_KEY) {
     throw new Error('SERP_API_KEY is not set in environment variables');
@@ -12,7 +14,6 @@ export async function fetchSerpAPIJobs(userId, { search = '', location = '' }) {
   });
 
   const url = `https://serpapi.com/search.json?${query.toString()}`;
-  console.log(`Fetching jobs from SerpAPI with query: ${url}`);
 
   const response = await fetch(url);
 
@@ -23,10 +24,8 @@ export async function fetchSerpAPIJobs(userId, { search = '', location = '' }) {
   const json = await response.json();
   const jobs = json.jobs_results || json.jobs || [];
   if (!jobs.length) {
-    console.warn('No jobs found in SerpAPI response');
     return [];
   }
-  console.log(`Fetched ${jobs.length} jobs from SerpAPI`);
 
   if (!Array.isArray(jobs)) {
     throw new Error('Invalid response format from SerpAPI');
@@ -34,8 +33,7 @@ export async function fetchSerpAPIJobs(userId, { search = '', location = '' }) {
 
   for (const job of jobs) {
     if (!job.id) {
-      console.warn('Job missing ID, generating a unique one');
-      job.id = `${job.title}-${job.company}-${job.location}-${Date.now()}`;
+      job.id = makeFallbackId(job);
     }
   }
 

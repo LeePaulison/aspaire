@@ -1,3 +1,5 @@
+import { makeFallbackId } from '../../lib/makeFallbackId.js';
+
 export async function fetchRemotiveJobs(userId, { search = '', location = '' }) {
   const query = new URLSearchParams();
   if (search) {
@@ -13,8 +15,7 @@ export async function fetchRemotiveJobs(userId, { search = '', location = '' }) 
 
   for (const job of jobs) {
     if (!job.id) {
-      console.warn('Job missing ID, generating a unique one');
-      job.id = `${job.title}-${job.company}-${job.location}-${Date.now()}`;
+      job.id = makeFallbackId(job);
     }
   }
 

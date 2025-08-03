@@ -10,7 +10,7 @@ async function safeFetch(fetchFn, ...args) {
   }
 }
 
-async function deduplicateJobs(jobs) {
+function deduplicateJobs(jobs) {
   const seen = new Set();
   const prioritized = [];
   const keyStrategy = (job) => `${job.title.toLowerCase()}-${job.company.toLowerCase()}-${job.location.toLowerCase()}`;
@@ -43,12 +43,8 @@ export async function fetchJobs(userId, { search = '', location = '' }) {
     safeFetch(fetchSerpAPIJobs, userId, { search, location }),
   ]);
 
-  console.log(`Fetched ${remotiveJobs.length} Remotive jobs and ${serpApiJobs.length} SerpAPI jobs`);
-
   const allJobs = [...remotiveJobs, ...serpApiJobs];
   const uniqueJobs = deduplicateJobs(allJobs);
-
-  console.log(`Total unique jobs after deduplication: ${uniqueJobs.length}`);
 
   return uniqueJobs;
 }
