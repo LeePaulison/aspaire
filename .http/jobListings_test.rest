@@ -90,3 +90,19 @@ Content-Type: application/json
     ]
   }
 }
+
+
+### Ingest jobs with filters
+POST http://localhost:4000/api/graphql
+Content-Type: application/json
+
+{
+  "query": "mutation($userId: ID!, $filters: JobFiltersInput!) { ingestJobs(userId: $userId, filters: $filters) { id title company source publication_date } }",
+  "variables": {
+    "userId": "ced44b24-543c-4292-adc0-82a0d5403a37",
+    "filters": {
+      "search": "Developer",
+      "location": "Remote"
+    }
+  }
+}

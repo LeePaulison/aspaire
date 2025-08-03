@@ -1,4 +1,5 @@
 import * as JobListings from '../dal/jobListings.js';
+import { ingestJobs } from '../actions/ingestJobs.js';
 
 export const jobListingsResolvers = {
   Query: {
@@ -34,5 +35,6 @@ export const jobListingsResolvers = {
   Mutation: {
     createJobListing: (_, { input }) => JobListings.createJobListing(input),
     bulkCreateJobListings: (_, { jobListings }) => JobListings.bulkCreateJobListings(jobListings),
+    ingestJobs: (_, { userId, filters }) => ingestJobs(_, { userId, filters }),
   },
 };

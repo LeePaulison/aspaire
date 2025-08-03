@@ -4,6 +4,11 @@ export const jobListingsTypeDefs = /* GraphQL */ `
     SERPAPI
   }
 
+  input JobFiltersInput {
+    search: String
+    location: String
+  }
+
   input JobListingInput {
     user_id: ID!
     title: String!
@@ -43,6 +48,7 @@ export const jobListingsTypeDefs = /* GraphQL */ `
   extend type Mutation {
     createJobListing(input: JobListingInput!): JobListing
     bulkCreateJobListings(jobListings: [JobListingInput!]!): [JobListing!]!
+    ingestJobs(userId: ID!, filters: JobFiltersInput!): [JobListing!]!
   }
 
   extend type Query {
