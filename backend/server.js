@@ -6,13 +6,28 @@ import { useServer } from 'graphql-ws/lib/use/ws';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
 import path from 'path';
+import { fileURLToPath } from 'url';
 
-const envPath = path.resolve(process.cwd(), '../.env');
+console.log('Starting server...');
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const envPath = path.resolve(__dirname, '../.env');
 dotenv.config({ path: envPath });
 
 import { typeDefs } from './schema/index.js';
 import { resolvers } from './resolvers/index.js';
 import { routeOpenAI } from './routes/openai.js';
+
+console.log('Environment Variables Loaded - MongoDB URI:', process.env.MONGODB_URI ? 'Loaded' : 'Not Loaded');
+
+// import { connectToDatabase } from './db/mongoose.js';
+
+// connectToDatabase()
+//   .then(() => console.log('✅ Connected to MongoDB'))
+//   .catch((err) => {
+//     console.error('❌ MongoDB connection error:', err);
+//     process.exit(1);
+//   });
 
 const JWT_SECRET = process.env.JWT_SECRET || 'dev-secret';
 console.log('JWT Secret:', JWT_SECRET ? 'Loaded' : 'Not Loaded');

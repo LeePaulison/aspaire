@@ -1,0 +1,31 @@
+### Save AI History Entry
+POST http://localhost:4000/graphql
+Content-Type: application/json
+
+{
+  "query": "mutation SaveAIHistory($input: SaveAIHistoryInput!) { saveAIHistory(input: $input) }",
+  "variables": {
+    "input": {
+      "userId": "abc123",
+      "type": "summary",
+      "input": {
+        "jobDescription": "Senior frontend role using React and GraphQL"
+      },
+      "output": {
+        "summary": "A senior role focusing on React and GraphQL frontend work."
+      }
+    }
+  }
+}
+
+
+### Fetch All AI History for User
+POST http://localhost:4000/graphql
+Content-Type: application/json
+
+{
+  "query": "query AIHistory($userId: ID!) { aiHistory(userId: $userId) { id type createdAt output } }",
+  "variables": {
+    "userId": "abc123"
+  }
+}

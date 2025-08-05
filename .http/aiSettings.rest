@@ -1,0 +1,36 @@
+### 🔍 Get AI Settings by User ID
+POST http://localhost:4000/api/graphql
+Content-Type: application/json
+
+{
+  "query": "query GetAISettings($userId: ID!) { aiSettings(userId: $userId) { id userId promptStyle temperature promptInterview promptCoverLetter promptSearchTerms model frequencyPenalty presencePenalty maxTokens disabled usageNotes lastUsed createdAt updatedAt } }",
+  "variables": {
+    "userId": "ced44b24-543c-4292-adc0-82a0d5403a37"
+  }
+}
+
+
+### ⚙️ Set AI Settings (Insert or Update)
+POST http://localhost:4000/api/graphql
+Content-Type: application/json
+
+{
+  "query": "mutation SetAISettings($input: AISettingsInput!) { setAISettings(input: $input) { id userId promptStyle temperature promptInterview promptCoverLetter promptSearchTerms model frequencyPenalty presencePenalty maxTokens disabled usageNotes lastUsed createdAt updatedAt } }",
+  "variables": {
+    "input": {
+      "userId": "ced44b24-543c-4292-adc0-82a0d5403a37",
+      "promptStyle": "BEHAVIORAL",
+      "temperature": 0.8,
+      "promptInterview": "You are a friendly STAR-based interviewer.",
+      "promptCoverLetter": "You help write persuasive cover letters tailored to the job.",
+      "promptSearchTerms": "You suggest alternate job titles based on resume.",
+      "model": "gpt-4o",
+      "frequencyPenalty": 0.3,
+      "presencePenalty": 0.2,
+      "maxTokens": 1000,
+      "disabled": false,
+      "usageNotes": "Test entry from REST client",
+      "lastUsed": "2025-08-03T20:45:00.000Z"
+    }
+  }
+}

@@ -6,6 +6,8 @@ import { remotiveTypeDefs } from './remotive.js';
 import { serpTypeDefs } from './serp.js';
 import { openAITypeDefs } from './openai.js';
 import { jobListingsTypeDefs } from './jobListings.js';
+import { aiSettingsTypeDefs } from './aiSettings.js';
+import { aiHistoryTypeDefs } from './aiHistory.js';
 
 export const typeDefs = [
   rootTypeDefs,
@@ -16,4 +18,6 @@ export const typeDefs = [
   serpTypeDefs,
   openAITypeDefs,
   jobListingsTypeDefs,
+  aiSettingsTypeDefs,
+  aiHistoryTypeDefs,
 ];

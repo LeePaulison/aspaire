@@ -13,6 +13,7 @@ export const userTypeDefs = /* GraphQL */ `
     preferences: Preferences
     resumes(limit: Int = 10, offset: Int = 0): [Resume]
     jobListings(limit: Int = 10, offset: Int = 0): [JobListing]
+    aiSettings: AISettings
   }
 
   input CreateUserInput {
@@ -21,6 +22,7 @@ export const userTypeDefs = /* GraphQL */ `
     email: String!
     name: String
     preferences: PreferencesInput
+    aiSettings: AISettingsInput
   }
 
   extend type Mutation {

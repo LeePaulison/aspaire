@@ -5,6 +5,8 @@ import { remotiveResolvers } from './remotive.js';
 import { serpResolvers } from './serp.js';
 import { openAIResolvers } from './openai.js';
 import { jobListingsResolvers } from './jobListings.js';
+import { aiSettingsResolvers } from './aiSettings.js';
+import { aiHistoryResolvers } from './aiHistory.js';
 
 export const resolvers = [
   userResolvers,
@@ -14,4 +16,6 @@ export const resolvers = [
   remotiveResolvers,
   serpResolvers,
   openAIResolvers,
+  aiSettingsResolvers,
+  aiHistoryResolvers,
 ];
