@@ -1,4 +1,5 @@
 import { generateCoverLetter } from '../../services/generators/coverLetter.js';
+import { logAIHistory } from '../../lib/logAIHistory.js';
 
 export async function handleOpenAICoverLetter(req, res) {
   try {
@@ -11,6 +12,17 @@ export async function handleOpenAICoverLetter(req, res) {
 
     const { jobDescription, resumeContent } = body;
     const letter = await generateCoverLetter({ jobDescription, resumeContent });
+
+    console.log('[OpenAI Cover Letter] Generated letter:', letter);
+
+    await logAIHistory({
+      conversationId: 'c-' + crypto.randomUUID(),
+      userId: req.user?.id || 'mock-user-id',
+      type: 'cover_letter',
+      title: 'Cover Letter Generation',
+      input: { jobDescription, resumeContent },
+      output: { letter },
+    });
 
     res.writeHead(200, { 'Content-Type': 'application/json' });
     res.end(JSON.stringify({ letter }));

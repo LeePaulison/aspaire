@@ -3,16 +3,20 @@ export const aiHistoryTypeDefs = /* GraphQL */ `
 
   type AIHistory {
     id: ID
+    conversationId: String!
     userId: ID!
     type: String!
+    title: String!
     input: JSON
     output: JSON
     createdAt: String
   }
 
   input SaveAIHistoryInput {
+    conversationId: String!
     userId: ID!
     type: String!
+    title: String!
     input: JSON
     output: JSON
   }

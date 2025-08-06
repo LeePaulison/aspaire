@@ -1,4 +1,5 @@
 import { suggestSearchTerms } from '../../services/generators/suggest.js';
+import { logAIHistory } from '../../lib/logAIHistory.js';
 
 export async function handleOpenAISuggestions(req, res) {
   try {
@@ -11,6 +12,15 @@ export async function handleOpenAISuggestions(req, res) {
 
     const { resume } = body;
     const suggestions = await suggestSearchTerms(resume);
+
+    await logAIHistory({
+      conversationId: 'c-' + crypto.randomUUID(),
+      userId: req.user?.id || 'mock-user-id',
+      type: 'search_term_suggestion',
+      title: 'Search Term Suggestion',
+      input: { resume },
+      output: { suggestions },
+    });
 
     res.writeHead(200, { 'Content-Type': 'application/json' });
     res.end(JSON.stringify({ suggestions }));

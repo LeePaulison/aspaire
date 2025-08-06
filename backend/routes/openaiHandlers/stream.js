@@ -1,4 +1,6 @@
 import { streamCompletion } from '../../services/openaiService.js';
+import crypto from 'crypto';
+import { logAIHistory } from '../../lib/logAIHistory.js';
 
 export async function handleOpenAIStream(req, res) {
   try {

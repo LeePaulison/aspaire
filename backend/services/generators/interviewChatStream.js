@@ -1,4 +1,6 @@
 import { OpenAI } from 'openai';
+import crypto from 'crypto';
+import { logAIHistory } from '../../lib/logAIHistory.js';
 
 export async function* streamInterviewChat(message, history = [], model = 'gpt-4o') {
   const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
@@ -26,4 +28,13 @@ export async function* streamInterviewChat(message, history = [], model = 'gpt-4
   }
 
   yield { interviewChatStream: { content: 'Stream Completed Successfully', done: true } };
+
+  await logAIHistory({
+    conversationId: 'c-' + crypto.randomUUID(),
+    userId: 'mock-user-id',
+    type: 'interview_chat',
+    title: 'Interview Chat Stream',
+    input: { message, history },
+    output: { content: 'Stream Completed Successfully' },
+  });
 }

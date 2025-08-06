@@ -3,7 +3,7 @@ import { OpenAI } from 'openai';
 export async function generateCompletion(prompt, model = 'gpt-4o') {
   if (!prompt) throw new Error('Missing prompt');
 
-  const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY }); // ✅ moved inside
+  const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
   const completion = await openai.chat.completions.create({
     model,
