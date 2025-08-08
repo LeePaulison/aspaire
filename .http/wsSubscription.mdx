@@ -1,0 +1,8 @@
+# Websocket Subscriptions
+
+openAIStream: {
+subscribe: (_, { prompt }) => streamChat(prompt),
+},
+interviewChatStream: {
+subscribe: (_, { message, history }) => streamInterviewChat(message, history),
+},

@@ -7,6 +7,8 @@ import { openAIResolvers } from './openai.js';
 import { jobListingsResolvers } from './jobListings.js';
 import { aiSettingsResolvers } from './aiSettings.js';
 import { aiHistoryResolvers } from './aiHistory.js';
+import { resumeAIResultsResolvers } from './resumeAIResults.js';
+import { resumeDetailResolvers } from './resumeDetail.js';
 
 export const resolvers = [
   userResolvers,
@@ -18,4 +20,6 @@ export const resolvers = [
   openAIResolvers,
   aiSettingsResolvers,
   aiHistoryResolvers,
+  resumeAIResultsResolvers,
+  resumeDetailResolvers,
 ];

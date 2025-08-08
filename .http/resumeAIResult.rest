@@ -1,0 +1,64 @@
+### Create User with Auth
+POST http://localhost:4000/api/graphql
+Content-Type: application/json
+
+{
+  "query": "mutation CreateUser($input: CreateUserInput!) { createUserWithAuth(input: $input) { id email name } }",
+  "variables": {
+    "input": {
+      "authProviderId": "test-auth-id",
+      "authProvider": "GITHUB",
+      "email": "testuser_john@example.com",
+      "name": "Test User"
+    }
+  }
+}
+
+### Create Pasted Resume
+# 📝 Replace "USER_ID" with result of CreateUser above
+POST http://localhost:4000/api/graphql
+Content-Type: application/json
+
+{
+  "query": "mutation CreateResume($input: CreatePastedResumeInput!) { createPastedResume(input: $input) { id description pastedContent sourceType userId } }",
+  "variables": {
+    "input": {
+      "userId": "ced44b24-543c-4292-adc0-82a0d5403a37",
+      "pastedContent": "Senior frontend developer with React, WCAG, and TypeScript experience.",
+      "sourceType": "PASTE",
+      "description": "Test resume"
+    }
+  }
+}
+
+### Set Resume AI Results
+# 📝 Replace "RESUME_ID" and "USER_ID" with previous results
+POST http://localhost:4000/api/graphql
+Content-Type: application/json
+
+{
+  "query": "mutation SetResumeAIResults($input: ResumeAIResultsInput!) { setResumeAIResults(input: $input) { resumeId userId aiSummary suggestedTitles suggestedSkills suggestedIndustries suggestedLocations } }",
+  "variables": {
+    "input": {
+      "resumeId": "1e17ba54-ce28-4a79-b18d-8f7e7641c7b7",
+      "userId": "ced44b24-543c-4292-adc0-82a0d5403a37",
+      "aiSummary": "Test summary for resume.",
+      "suggestedTitles": ["Frontend Developer", "React Engineer"],
+      "suggestedSkills": ["React", "WCAG", "TypeScript"],
+      "suggestedIndustries": ["Education", "Technology"],
+      "suggestedLocations": ["Remote", "New York"]
+    }
+  }
+}
+
+### Get Resume AI Results
+# 📝 Replace "RESUME_ID" again
+POST http://localhost:4000/api/graphql
+Content-Type: application/json
+
+{
+  "query": "query GetResumeAIResults($resumeId: ID!) { getResumeAIResults(resumeId: $resumeId) { resumeId userId aiSummary suggestedTitles suggestedSkills suggestedIndustries suggestedLocations } }",
+  "variables": {
+    "resumeId": "1e17ba54-ce28-4a79-b18d-8f7e7641c7b7"
+  }
+}

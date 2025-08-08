@@ -67,7 +67,6 @@ export async function createPastedResume(resume) {
 }
 
 export async function getResumeById(id) {
-  console.log('[getResumeById] DB Client:', client);
   console.log('[getResumeById] Fetching resume with ID:', id);
 
   try {

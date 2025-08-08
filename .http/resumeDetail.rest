@@ -1,0 +1,10 @@
+### Get Resume Detail Composite
+POST http://localhost:4000/api/graphql
+Content-Type: application/json
+
+{
+  "query": "query GetResumeDetail($resumeId: ID!) { getResumeDetail(resumeId: $resumeId) { resume { id originalFilename description sourceType createdAt } aiResults { aiSummary suggestedTitles suggestedSkills suggestedIndustries suggestedLocations } } }",
+  "variables": {
+    "resumeId": "1e17ba54-ce28-4a79-b18d-8f7e7641c7b7"
+  }
+}
