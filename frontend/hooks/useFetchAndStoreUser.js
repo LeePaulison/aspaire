@@ -1,6 +1,8 @@
 import { useEffect } from 'react';
 import { useLazyQuery } from '@apollo/client';
 import { GET_USER_BY_AUTH } from '@/graphql/queries/user';
+import { CREATE_USER } from '@/graphql/mutations/user';
+import { useMutation } from '@apollo/client';
 import { useUserStore } from '@/store/userStore';
 import { usePreferencesStore } from '@/store/preferencesStore';
 import { useResumesStore } from '@/store/resumesStore';
@@ -19,6 +21,9 @@ export function useFetchAndStoreUser() {
   const [fetchUser, { loading, error, data }] = useLazyQuery(GET_USER_BY_AUTH);
   const { data: sessionData } = useSession();
 
+  // At the top of your hook, after importing CREATE_USER:
+  const [createUser] = useMutation(CREATE_USER);
+
   useEffect(() => {
     if (user || !sessionData?.user) return;
 
@@ -36,12 +41,10 @@ export function useFetchAndStoreUser() {
 
   useEffect(() => {
     if (data?.userByAuth) {
-      console.log('[useFetchAndStoreUser] Storing fetched user:', data.userByAuth);
-
+      // ✅ User exists, same logic as before
       const dbUser = data.userByAuth;
       const avatar = sessionData?.user?.image || '';
 
-      // Compose enriched user object
       const enrichedUser = {
         id: dbUser.id,
         name: dbUser.name,
@@ -50,23 +53,40 @@ export function useFetchAndStoreUser() {
       };
 
       setUser(enrichedUser);
+      if (dbUser.preferences) setPreferences(dbUser.preferences);
+      if (dbUser.resumes) setResumes(dbUser.resumes);
+    } else if (sessionData?.user) {
+      console.warn('[useFetchAndStoreUser] No user found — creating new user');
 
-      // Log the Preferences fetched
-      console.log(`[useFetchAndStoreUser] Stored preferences for user: ${dbUser.id}, Preferences:`, dbUser.preferences);
-      if (dbUser.preferences) {
-        setPreferences(dbUser.preferences);
-      }
+      createUser({
+        variables: {
+          input: {
+            authProvider: 'GITHUB',
+            authProviderId: sessionData.user.id,
+            email: sessionData.user.email || '',
+            name: sessionData.user.name || '',
+          },
+        },
+      })
+        .then(({ data }) => {
+          const newUser = data?.createUser;
+          if (!newUser) return;
 
-      // Log the number of resumes fetched
-      console.log(`[useFetchAndStoreUser] Stored ${dbUser.resumes.length} resumes`);
+          const avatar = sessionData?.user?.image || '';
+          const enrichedUser = {
+            id: newUser.id,
+            name: newUser.name,
+            email: newUser.email,
+            avatar,
+          };
 
-      if (dbUser.resumes) {
-        console.log('[useFetchAndStoreUser] Resumes:', dbUser.resumes);
-        console.log('🚨 Raw dbUser.resumes:', dbUser.resumes);
-        console.log('🔍 Is nested?', Array.isArray(dbUser.resumes[0]));
-
-        setResumes(dbUser.resumes);
-      }
+          setUser(enrichedUser);
+          if (newUser.preferences) setPreferences(newUser.preferences);
+          if (newUser.resumes) setResumes(newUser.resumes);
+        })
+        .catch((err) => {
+          console.error('[useFetchAndStoreUser] Failed to create user:', err);
+        });
     }
   }, [data, setUser, setPreferences, setResumes, sessionData]);
 
