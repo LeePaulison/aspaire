@@ -20,15 +20,6 @@ import { routeOpenAI } from './routes/openai.js';
 
 console.log('Environment Variables Loaded - MongoDB URI:', process.env.MONGODB_URI ? 'Loaded' : 'Not Loaded');
 
-// import { connectToDatabase } from './db/mongoose.js';
-
-// connectToDatabase()
-//   .then(() => console.log('✅ Connected to MongoDB'))
-//   .catch((err) => {
-//     console.error('❌ MongoDB connection error:', err);
-//     process.exit(1);
-//   });
-
 const JWT_SECRET = process.env.JWT_SECRET || 'dev-secret';
 console.log('JWT Secret:', JWT_SECRET ? 'Loaded' : 'Not Loaded');
 console.log('OpenAI API Key:', process.env.OPENAI_API_KEY ? 'Loaded' : 'Not Loaded');
@@ -70,7 +61,7 @@ const wsServer = new WebSocketServer({
 
 // eslint-disable-next-line react-hooks/rules-of-hooks
 useServer({ schema }, wsServer);
-
-server.listen(4000, () => {
-  console.log('🚀 Yoga GraphQL running at http://localhost:4000/graphql');
+const PORT = process.env.PORT || 3000;
+server.listen(PORT, 0, 0, 0, 0, () => {
+  console.log(`🚀 Yoga GraphQL running at http://localhost:${PORT}/graphql`);
 });

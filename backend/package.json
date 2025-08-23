@@ -1,5 +1,5 @@
 {
-  "name": "backend",
+  "name": "aspaire-backend",
   "version": "1.0.0",
   "description": "",
   "main": "server.js",
@@ -24,6 +24,10 @@
     "nodemon": "^3.1.10",
     "openai": "^5.10.2",
     "pg": "^8.13.1",
+    "pg-format": "^1.0.4",
     "ws": "^8.18.0"
+  },
+  "devDependencies": {
+    "@flydotio/dockerfile": "^0.7.10"
   }
 }

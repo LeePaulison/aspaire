@@ -1,4 +1,4 @@
-import { saveAIHistory, getAIHistoryByUser } from '../dal/aiHistory.js';
+import { saveAIHistory, getAIHistoryByUser } from '../dal/aihistory.js';
 
 export const aiHistoryResolvers = {
   Query: {
