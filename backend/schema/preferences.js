@@ -35,5 +35,6 @@ export const preferencesTypeDefs = /* GraphQL */ `
 
   extend type Query {
     preferences(user_id: ID!): Preferences
+    preferencesByUserId(user_id: ID!): Preferences
   }
 `;

@@ -1,0 +1,54 @@
+### Test Context Flow - Without Authentication
+# This will show context.user = null
+POST http://localhost:4000/graphql
+Content-Type: application/json
+
+{
+  "query": "query { debugContext { hasUser userInfo { sub email name } message timestamp } }"
+}
+
+### Test Context Flow - With Invalid Token
+# This will show context.user = null (token verification fails)
+POST http://localhost:4000/graphql
+Content-Type: application/json
+Authorization: Bearer invalid-token-here
+
+{
+  "query": "query { debugContext { hasUser userInfo { sub email name } message timestamp } }"
+}
+
+### Test Context Flow - With Valid Token (replace with real token)
+# This will show context.user = { actual user data }
+POST http://localhost:4000/graphql
+Content-Type: application/json
+Authorization: Bearer YOUR_REAL_JWT_TOKEN_HERE
+
+{
+  "query": "query { debugContext { hasUser userInfo { sub email name tokenIssuedAt tokenExpiresAt } message timestamp } }"
+}
+
+### Debug Authentication Flow - Step by Step
+POST http://localhost:4000/graphql
+Content-Type: application/json
+Authorization: Bearer YOUR_REAL_JWT_TOKEN_HERE
+
+{
+  "query": "query { debugAuthFlow { steps authenticated userId } }"
+}
+
+### Show how requireAuth() uses context
+POST http://localhost:4000/graphql
+Content-Type: application/json
+
+{
+  "query": "query { preferences { id user_id } }"
+}
+
+### Same query with valid token (will work)
+POST http://localhost:4000/graphql
+Content-Type: application/json
+Authorization: Bearer YOUR_REAL_JWT_TOKEN_HERE
+
+{
+  "query": "query { preferences { id user_id } }"
+}

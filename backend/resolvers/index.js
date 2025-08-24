@@ -9,6 +9,7 @@ import { aiSettingsResolvers } from './aiSettings.js';
 import { aiHistoryResolvers } from './aiHistory.js';
 import { resumeAIResultsResolvers } from './resumeAIResults.js';
 import { resumeDetailResolvers } from './resumeDetail.js';
+import { debugResolvers } from './debug.js';
 
 export const resolvers = [
   userResolvers,
@@ -22,4 +23,5 @@ export const resolvers = [
   aiHistoryResolvers,
   resumeAIResultsResolvers,
   resumeDetailResolvers,
+  debugResolvers,
 ];

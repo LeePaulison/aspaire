@@ -1,9 +1,10 @@
-import GitHubProvider from 'next-auth/providers/github';
+import NextAuth from 'next-auth';
+import GitHub from 'next-auth/providers/github';
 import { getSubFromAuthHeader } from './token.js';
 
-export const authOptions = {
+export const { handlers, auth, signIn, signOut } = NextAuth({
   providers: [
-    GitHubProvider({
+    GitHub({
       clientId: process.env.GITHUB_CLIENT_ID,
       clientSecret: process.env.GITHUB_CLIENT_SECRET,
     }),
@@ -13,9 +14,6 @@ export const authOptions = {
   },
   pages: {
     signIn: '/auth/signin',
-  },
-  jwt: {
-    encryption: false,
   },
   callbacks: {
     async jwt({ token, user }) {
@@ -38,6 +36,6 @@ export const authOptions = {
     },
   },
   secret: process.env.JWT_SECRET,
-};
+});
 
 export { getSubFromAuthHeader };

@@ -63,5 +63,6 @@ export const resumeTypeDefs = /* GraphQL */ `
   extend type Query {
     resume(id: ID!): Resume
     resumesByUser(userId: ID!, limit: Int!, offset: Int!): [Resume!]!
+    myResumes(limit: Int, offset: Int): [Resume!]!
   }
 `;

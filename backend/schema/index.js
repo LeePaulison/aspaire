@@ -10,6 +10,7 @@ import { aiSettingsTypeDefs } from './aiSettings.js';
 import { aiHistoryTypeDefs } from './aiHistory.js';
 import { resumeAIResultsTypeDefs } from './resumeAIResults.js';
 import { resumeDetailTypeDefs } from './resumeDetail.js';
+import { debugTypeDefs } from './debug.js';
 
 export const typeDefs = [
   rootTypeDefs,
@@ -24,4 +25,5 @@ export const typeDefs = [
   aiHistoryTypeDefs,
   resumeAIResultsTypeDefs,
   resumeDetailTypeDefs,
+  debugTypeDefs,
 ];

@@ -1,0 +1,51 @@
+### Test JWT Authentication with GraphQL
+
+# First, get a token from your Next.js frontend
+# GET http://localhost:3000/api/auth/token
+# Authorization: Bearer <your-nextauth-session-token>
+
+### Test GraphQL Query with JWT Authentication
+POST http://localhost:4000/graphql
+Content-Type: application/json
+Authorization: Bearer YOUR_JWT_TOKEN_HERE
+
+{
+  "query": "query GetMyPreferences { preferences { id user_id preferences } }"
+}
+
+### Test GraphQL Query without Authentication (should fail)
+POST http://localhost:4000/graphql
+Content-Type: application/json
+
+{
+  "query": "query GetMyPreferences { preferences { id user_id preferences } }"
+}
+
+### Test Create Resume with Authentication
+POST http://localhost:4000/graphql
+Content-Type: application/json
+Authorization: Bearer YOUR_JWT_TOKEN_HERE
+
+{
+  "query": "mutation CreateResume($input: CreatePastedResumeInput!) { createPastedResume(input: $input) { id user_id title content created_at } }",
+  "variables": {
+    "input": {
+      "title": "My Test Resume",
+      "content": "This is my resume content...",
+      "type": "pasted"
+    }
+  }
+}
+
+### Test Get My Resumes with Authentication
+POST http://localhost:4000/graphql
+Content-Type: application/json
+Authorization: Bearer YOUR_JWT_TOKEN_HERE
+
+{
+  "query": "query GetMyResumes($limit: Int, $offset: Int) { myResumes(limit: $limit, offset: $offset) { id title content created_at } }",
+  "variables": {
+    "limit": 10,
+    "offset": 0
+  }
+}

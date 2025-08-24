@@ -1,29 +1,39 @@
-import { getToken } from 'next-auth/jwt';
-import jwt from 'jsonwebtoken';
+import { auth } from '@/lib/auth';
+import { signJWT } from '@/lib/jwt-web.js';
 
 export async function GET(req) {
-  const payload = await getToken({
-    req,
-    secret: process.env.JWT_SECRET,
-  });
+  const session = await auth();
 
-  if (!payload) {
-    console.warn('[API] No payload found');
+  if (!session?.user) {
+    console.warn('[API] No session found');
     return new Response('Unauthorized', { status: 401 });
   }
 
-  const signed = jwt.sign(payload, process.env.JWT_SECRET, {
-    algorithm: 'HS256',
-  });
+  // Create a payload from the session
+  const payload = {
+    sub: session.user.id || session.user.email,
+    email: session.user.email,
+    name: session.user.name,
+    image: session.user.image,
+    iat: Math.floor(Date.now() / 1000), // issued at
+    exp: Math.floor(Date.now() / 1000) + (24 * 60 * 60), // expires in 24 hours
+  };
 
-  const parts = signed.split('.');
-  console.log('[API] token split count:', parts.length);
-  console.log('[API] token:', signed);
+  try {
+    const signed = await signJWT(payload, process.env.JWT_SECRET);
 
-  if (parts.length !== 3) {
-    console.warn('[API] Still malformed');
-    return new Response('Invalid token', { status: 400 });
+    const parts = signed.split('.');
+    console.log('[API] token split count:', parts.length);
+    console.log('[API] token:', signed);
+
+    if (parts.length !== 3) {
+      console.warn('[API] Still malformed');
+      return new Response('Invalid token', { status: 400 });
+    }
+
+    return Response.json({ token: signed });
+  } catch (error) {
+    console.error('[API] Error signing JWT:', error);
+    return new Response('Error generating token', { status: 500 });
   }
-
-  return Response.json({ token: signed });
 }

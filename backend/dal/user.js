@@ -36,12 +36,23 @@ export async function createUserWithAuth(userInput) {
 
 export async function getUserByAuth(authProviderId, authProvider, email, name) {
   try {
-    const query = `
+    // First try to find by unique auth identifiers (most reliable)
+    let query = `
       SELECT * FROM users
-      WHERE auth_provider_id = $1 AND auth_provider = $2 AND email = $3 AND name = $4;
+      WHERE auth_provider_id = $1 AND auth_provider = $2;
     `;
-    const result = await pool.query(query, [authProviderId, authProvider, email, name]);
-    const row = result.rows[0];
+    let result = await pool.query(query, [authProviderId, authProvider]);
+    let row = result.rows[0];
+
+    // If not found by auth IDs, try by email (fallback)
+    if (!row && email) {
+      query = `
+        SELECT * FROM users
+        WHERE email = $1;
+      `;
+      result = await pool.query(query, [email]);
+      row = result.rows[0];
+    }
 
     if (!row) return null;
 

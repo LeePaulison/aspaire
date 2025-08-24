@@ -1,0 +1,15 @@
+### Test Basic GraphQL Connection
+POST http://localhost:4000/graphql
+Content-Type: application/json
+
+{
+  "query": "query { __typename }"
+}
+
+### Test Basic GraphQL Connection (port 3000)
+POST http://localhost:3000/graphql
+Content-Type: application/json
+
+{
+  "query": "query { __typename }"
+}

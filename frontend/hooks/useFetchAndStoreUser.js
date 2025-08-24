@@ -16,7 +16,7 @@ export function useFetchAndStoreUser() {
   const user = useUserStore((s) => s.user);
   const setUser = useUserStore((s) => s.setUser);
   const setPreferences = usePreferencesStore((s) => s.setPreferences);
-  const setResumes = useResumesStore((s) => s.addResumes);
+  const setResumes = useResumesStore((s) => s.setResumes);
 
   const [fetchUser, { loading, error, data }] = useLazyQuery(GET_USER_BY_AUTH);
   const { data: sessionData } = useSession();
@@ -69,7 +69,7 @@ export function useFetchAndStoreUser() {
         },
       })
         .then(({ data }) => {
-          const newUser = data?.createUser;
+          const newUser = data?.createUserWithAuth;
           if (!newUser) return;
 
           const avatar = sessionData?.user?.image || '';
