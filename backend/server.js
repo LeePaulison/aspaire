@@ -35,13 +35,21 @@ const yoga = createYoga({
   graphqlEndpoint: '/graphql',
   cors: {
     origin: [
+      // Local development
       'http://localhost:3000',
       'http://localhost:3001',
       'http://localhost:4000',
       'http://localhost:5173',
       'http://127.0.0.1:3000',
       'http://127.0.0.1:3001',
-      'http://127.0.0.1:4000'
+      'http://127.0.0.1:4000',
+      // Production domains - common hosting providers
+      'https://aspaire.vercel.app',
+      'https://aspaire-frontend.vercel.app',
+      /\.vercel\.app$/,
+      /\.netlify\.app$/,
+      /\.fly\.dev$/,
+      // Add your specific frontend domain here if different
     ],
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
@@ -125,7 +133,7 @@ const wsServer = new WebSocketServer({
 
 // eslint-disable-next-line react-hooks/rules-of-hooks
 useServer({ schema }, wsServer);
-const PORT = process.env.PORT || 4000;
-server.listen(PORT, 0, 0, 0, 0, () => {
-  console.log(`🚀 Yoga GraphQL running at http://localhost:${PORT}/graphql`);
+const PORT = process.env.PORT || 3000;
+server.listen(PORT, '0.0.0.0', () => {
+  console.log(`🚀 Yoga GraphQL running at http://0.0.0.0:${PORT}/graphql`);
 });

@@ -28,6 +28,7 @@ export function useFetchAndStoreUser() {
     if (user || !sessionData?.user) return;
 
     console.log('[useFetchAndStoreUser] Fetching user for:', sessionData.user.email);
+    console.log('[DEBUG] Full sessionData:', JSON.stringify(sessionData, null, 2));
 
     fetchUser({
       variables: {
