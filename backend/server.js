@@ -18,24 +18,34 @@ import { resolvers } from './resolvers/index.js';
 import { routeOpenAI } from './routes/openai.js';
 import { getUserFromRequest } from './middleware/auth.js';
 
-console.log('Environment Variables Loaded - MongoDB URI:', process.env.MONGODB_URI ? 'Loaded' : 'Not Loaded');
-console.log('JWT Secret:', process.env.JWT_SECRET ? 'Loaded' : 'Not Loaded');
-console.log('OpenAI API Key:', process.env.OPENAI_API_KEY ? 'Loaded' : 'Not Loaded');
+// Validate required environment variables
+if (!process.env.JWT_SECRET) {
+  throw new Error('JWT_SECRET environment variable is required');
+}
+if (!process.env.MONGODB_URI && !process.env.DATABASE_URL) {
+  throw new Error('MONGODB_URI or DATABASE_URL environment variable is required');
+}
+if (!process.env.OPENAI_API_KEY) {
+  throw new Error('OPENAI_API_KEY environment variable is required');
+}
 
 const schema = createSchema({ typeDefs, resolvers });
 
 const yoga = createYoga({
   schema,
   context: ({ request }) => {
-    console.log('[GraphQL] Creating context for request');
     const user = getUserFromRequest(request);
-    console.log('[GraphQL] Context user:', user ? 'authenticated' : 'not authenticated');
     return { user };
   },
   graphqlEndpoint: '/graphql',
   cors: {
-    origin: [
-      // Local development
+    origin: process.env.NODE_ENV === 'production' ? [
+      // Production domains - specify exact URLs
+      'https://aspaire.vercel.app',
+      'https://aspaire-frontend.vercel.app',
+      // Add other specific production domains here
+    ] : [
+      // Development domains
       'http://localhost:3000',
       'http://localhost:3001',
       'http://localhost:4000',
@@ -43,13 +53,6 @@ const yoga = createYoga({
       'http://127.0.0.1:3000',
       'http://127.0.0.1:3001',
       'http://127.0.0.1:4000',
-      // Production domains - common hosting providers
-      'https://aspaire.vercel.app',
-      'https://aspaire-frontend.vercel.app',
-      /\.vercel\.app$/,
-      /\.netlify\.app$/,
-      /\.fly\.dev$/,
-      // Add your specific frontend domain here if different
     ],
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
@@ -63,20 +66,25 @@ const yoga = createYoga({
     optionsSuccessStatus: 200
   },
   plugins: [
-    {
-      onRequest: ({ request, serverContext }) => {
-        console.log('[GraphQL] Request received:', request.url);
-      },
-      onResponse: ({ request, response }) => {
-        console.log('[GraphQL] Response status:', response.status);
-      }
-    }
+    // Add plugins here as needed
   ],
   formatError: (err) => {
+    // Log full error details server-side for debugging
     console.error('[GraphQL] Error occurred:', err.message);
-    console.error('[GraphQL] Error stack:', err.stack);
-    console.error('[GraphQL] Error locations:', err.locations);
-    console.error('[GraphQL] Error path:', err.path);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('[GraphQL] Error stack:', err.stack);
+      console.error('[GraphQL] Error locations:', err.locations);
+      console.error('[GraphQL] Error path:', err.path);
+    }
+    
+    // Return limited error information to client
+    if (process.env.NODE_ENV === 'production') {
+      return {
+        message: 'An error occurred while processing your request',
+        // Only include locations and path in development
+      };
+    }
+    
     return {
       message: err.message,
       locations: err.locations,
@@ -87,11 +95,29 @@ const yoga = createYoga({
 
 // const server = createServer(yoga);
 const server = createServer(async (req, res) => {
-  console.log(`[Server] ${req.method} ${req.url}`);
+  if (process.env.NODE_ENV !== 'production') {
+    console.log(`[Server] ${req.method} ${req.url}`);
+  }
   
   // Set CORS headers on ALL responses
+  const allowedOrigins = process.env.NODE_ENV === 'production' ? [
+    'https://aspaire.vercel.app',
+    'https://aspaire-frontend.vercel.app'
+  ] : [
+    'http://localhost:3000',
+    'http://localhost:3001',
+    'http://localhost:4000',
+    'http://localhost:5173',
+    'http://127.0.0.1:3000',
+    'http://127.0.0.1:3001',
+    'http://127.0.0.1:4000'
+  ];
+  
   const setCorsHeaders = () => {
-    res.setHeader('Access-Control-Allow-Origin', req.headers.origin || '*');
+    const origin = req.headers.origin;
+    if (allowedOrigins.includes(origin)) {
+      res.setHeader('Access-Control-Allow-Origin', origin);
+    }
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, Accept, Origin');
     res.setHeader('Access-Control-Allow-Credentials', 'true');
@@ -101,7 +127,6 @@ const server = createServer(async (req, res) => {
 
   // Handle preflight OPTIONS requests
   if (req.method === 'OPTIONS') {
-    console.log('[Server] Handling OPTIONS preflight request');
     res.setHeader('Access-Control-Max-Age', '86400');
     res.writeHead(200);
     res.end();
@@ -109,20 +134,19 @@ const server = createServer(async (req, res) => {
   }
 
   if (req.url?.startsWith('/openai')) {
-    console.log('[Server] Routing to OpenAI handler');
     return await routeOpenAI(req, res);
   }
-
-  console.log('[Server] Routing to GraphQL Yoga');
   
   try {
     const result = await yoga(req, res);
-    console.log('[Server] GraphQL Yoga handled request successfully');
     return result;
   } catch (error) {
     console.error('[Server] GraphQL Yoga error:', error);
     res.writeHead(500, { 'Content-Type': 'application/json' });
-    res.end(JSON.stringify({ error: 'Internal Server Error', message: error.message }));
+    const errorMessage = process.env.NODE_ENV === 'production' 
+      ? 'Internal Server Error' 
+      : error.message;
+    res.end(JSON.stringify({ error: 'Internal Server Error', message: errorMessage }));
   }
 });
 

@@ -18,16 +18,11 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
-        console.log('[NextAuth] Issuing new token for:', user.id);
+        if (process.env.NODE_ENV !== 'production') {
+          console.log('[NextAuth] Issuing new token for user:', user.id);
+        }
         token.id = user.id;
       }
-      if (token?.id) {
-        console.log('[NextAuth] Token ID:', token.id);
-      } else {
-        console.log('[NextAuth] No user ID in token');
-      }
-      console.log('[NextAuth] Token:', token);
-      console.log('[NextAuth] Token (raw):', JSON.stringify(token));
       return token;
     },
     async session({ session, token }) {

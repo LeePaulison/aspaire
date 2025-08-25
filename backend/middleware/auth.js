@@ -1,6 +1,10 @@
 import jwt from 'jsonwebtoken';
 
-const JWT_SECRET = process.env.JWT_SECRET || 'dev-secret';
+const JWT_SECRET = process.env.JWT_SECRET;
+
+if (!JWT_SECRET) {
+  throw new Error('JWT_SECRET environment variable is required');
+}
 
 /**
  * Extract and verify JWT token from request headers
@@ -16,10 +20,14 @@ export function getUserFromRequest(req) {
     const token = authHeader.slice(7); // Remove 'Bearer ' prefix
     const decoded = jwt.verify(token, JWT_SECRET);
     
-    console.log('[Auth] Token verified for user:', decoded.sub || decoded.email);
+    if (process.env.NODE_ENV !== 'production') {
+      console.log('[Auth] Token verified for user:', decoded.sub || decoded.email);
+    }
     return decoded;
   } catch (error) {
-    console.warn('[Auth] JWT verification failed:', error.message);
+    if (process.env.NODE_ENV !== 'production') {
+      console.warn('[Auth] JWT verification failed:', error.message);
+    }
     return null;
   }
 }
