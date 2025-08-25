@@ -68,14 +68,16 @@ export default function JobsPage() {
 
   // Kick off ingestion
   const [runIngestion, { loading: ingesting, error: ingestError }] = useMutation(INGEST_JOBS, {
-    variables: { userId: user.id, filters: { search, location } },
-    refetchQueries: [{ query: JOB_LISTINGS_BY_USER, variables: { userId: user.id, limit: 12, offset: 0 } }],
+    variables: { userId: user?.id, filters: { search, location } },
+    refetchQueries: [{ query: JOB_LISTINGS_BY_USER, variables: { userId: user?.id, limit: 12, offset: 0 } }],
+    skip: !user?.id, // Skip mutation if user is not available
   });
 
   // Feed query
   const { data, loading, error, fetchMore } = useQuery(JOB_LISTINGS_BY_USER, {
-    variables: { userId: user.id, limit: 12, offset: 0 },
+    variables: { userId: user?.id, limit: 12, offset: 0 },
     fetchPolicy: 'cache-and-network',
+    skip: !user?.id, // Skip query if user is not available
   });
 
   const items = data?.jobListingsByUser ?? [];
@@ -95,6 +97,17 @@ export default function JobsPage() {
     e.preventDefault();
     await runIngestion();
   };
+
+  // Show loading state while user is being loaded
+  if (!user) {
+    return (
+      <div className='container py-6'>
+        <div className='rounded-xl border p-6 text-sm text-muted-foreground'>
+          Loading user data...
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className='container py-6'>
