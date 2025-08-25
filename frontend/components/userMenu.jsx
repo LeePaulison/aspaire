@@ -39,6 +39,9 @@ export function UserMenu({ user, onSignOut, onSignIn }) {
         <DropdownMenuItem asChild disabled={isDisabled}>
           <Link href='/dashboard'>Dashboard</Link>
         </DropdownMenuItem>
+        <DropdownMenuItem asChild disabled={isDisabled}>
+          <Link href='/jobs'>Job Search</Link>
+        </DropdownMenuItem>
 
         {/* Submenu trigger as native <button> via asChild */}
         <DropdownMenuSub>
@@ -53,7 +56,7 @@ export function UserMenu({ user, onSignOut, onSignIn }) {
           </DropdownMenuSubTrigger>
           <DropdownMenuSubContent>
             <DropdownMenuItem asChild disabled={isDisabled}>
-              <Link href='/profile'>Edit Profile</Link>
+              <Link href='/profile'>View Profile</Link>
             </DropdownMenuItem>
             <DropdownMenuItem asChild disabled={isDisabled}>
               <Link href='/profile/resumes'>Resumes</Link>

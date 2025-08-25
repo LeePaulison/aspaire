@@ -29,12 +29,14 @@ export default function ProfilePage() {
       <section className='mt-8'>
         <h1 className='text-2xl font-bold mt-4'>Profile Information</h1>
         <div className='flex flex-row mt-4'>
-          <div className='w-24 h-24 relative'>
+          <div className='relative w-10 h-10 md:w-24 md:h-24'>
             <Image
               src={user?.avatar || '/default-avatar.png'}
               alt='User Avatar'
               fill
               className='rounded-full object-cover'
+              sizes='(max-width: 48rem) 2.5rem, 6rem'
+              priority
             />
           </div>
           <div className='ml-4'>

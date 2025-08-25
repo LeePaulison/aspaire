@@ -7,7 +7,11 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "env:local": "node scripts/switch-env.js local",
+    "env:fly": "node scripts/switch-env.js fly",
+    "dev:local": "npm run env:local && next dev --turbopack",
+    "dev:fly": "npm run env:fly && next dev --turbopack"
   },
   "dependencies": {
     "@apollo/client": "^3.13.8",
@@ -28,6 +32,7 @@
     "dotenv": "^17.2.1",
     "graphql": "^16.11.0",
     "graphql-tag": "^2.12.6",
+    "isomorphic-dompurify": "^2.26.0",
     "lucide-react": "^0.525.0",
     "next": "^15.3.5",
     "next-auth": "^5.0.0-beta.29",
