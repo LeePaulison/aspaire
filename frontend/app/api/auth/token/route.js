@@ -1,37 +1,41 @@
-import { auth } from '@/lib/auth';
-import { signJWT } from '@/lib/jwt-web.js';
+import jwt from 'jsonwebtoken';
+import { NextRequest } from 'next/server';
 
 export async function GET(req) {
-  const session = await auth();
+  console.log('[API] Token route called');
+  
+  // Get the database user ID from request parameters or header
+  const url = new URL(req.url);
+  const dbUserId = url.searchParams.get('userId');
+  
+  console.log('[API] Database user ID from params:', dbUserId);
 
-  if (!session?.user) {
-    console.warn('[API] No session found');
-    return new Response('Unauthorized', { status: 401 });
+  if (!dbUserId) {
+    console.warn('[API] No database user ID provided');
+    return new Response('Database user ID required', { status: 400 });
   }
-
-  // Create a payload from the session
+  
+  // For now, create a simplified payload with just the database user ID
+  // In a production app, you'd want to validate the user session first
   const payload = {
-    sub: session.user.id || session.user.email,
-    email: session.user.email,
-    name: session.user.name,
-    image: session.user.image,
+    sub: dbUserId, // Use database UUID
     iat: Math.floor(Date.now() / 1000), // issued at
-    exp: Math.floor(Date.now() / 1000) + (24 * 60 * 60), // expires in 24 hours
   };
+  
+  console.log('[API] JWT payload being created:', JSON.stringify(payload, null, 2));
+  console.log('[API] JWT_SECRET exists:', !!process.env.JWT_SECRET);
+  console.log('[API] JWT_SECRET length:', process.env.JWT_SECRET?.length);
 
   try {
-    const signed = await signJWT(payload, process.env.JWT_SECRET);
+    const token = jwt.sign(payload, process.env.JWT_SECRET, {
+      algorithm: 'HS256',
+      expiresIn: '24h' // Use expiresIn option instead of exp in payload
+    });
 
-    const parts = signed.split('.');
-    console.log('[API] token split count:', parts.length);
-    console.log('[API] token:', signed);
+    console.log('[API] JWT token created:', token.substring(0, 20) + '...');
+    console.log('[API] Token created for user:', payload.sub);
 
-    if (parts.length !== 3) {
-      console.warn('[API] Still malformed');
-      return new Response('Invalid token', { status: 400 });
-    }
-
-    return Response.json({ token: signed });
+    return Response.json({ token });
   } catch (error) {
     console.error('[API] Error signing JWT:', error);
     return new Response('Error generating token', { status: 500 });

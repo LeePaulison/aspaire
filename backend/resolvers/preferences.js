@@ -33,14 +33,14 @@ export const preferencesResolvers = {
       const userId = user.sub || user.id || user.email;
       
       // Ensure user can only set their own preferences
-      if (input.user_id && input.user_id !== userId) {
+      if (input.userId && input.userId !== userId) {
         throw new Error('Cannot set preferences for another user');
       }
       
-      // Set the user_id from the token if not provided
+      // Set the userId from the token if not provided
       const preferencesInput = {
         ...input,
-        user_id: userId
+        userId: input.userId || userId
       };
       
       return await setPreferences(preferencesInput);

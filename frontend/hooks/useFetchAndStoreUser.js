@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useCallback } from 'react';
 import { useLazyQuery } from '@apollo/client';
 import { GET_USER_BY_AUTH } from '@/graphql/queries/user';
 import { CREATE_USER } from '@/graphql/mutations/user';
@@ -38,7 +38,7 @@ export function useFetchAndStoreUser() {
         name: sessionData.user.name || '',
       },
     });
-  }, [user, sessionData, fetchUser]);
+  }, [user, sessionData?.user?.id, sessionData?.user?.email]); // Remove fetchUser from deps
 
   useEffect(() => {
     if (data?.userByAuth) {
@@ -89,7 +89,7 @@ export function useFetchAndStoreUser() {
           console.error('[useFetchAndStoreUser] Failed to create user:', err);
         });
     }
-  }, [data, setUser, setPreferences, setResumes, sessionData]);
+  }, [data, sessionData?.user?.image]); // Remove store setters from deps as they're stable
 
   return {
     loading,

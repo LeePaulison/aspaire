@@ -5,10 +5,16 @@ export const SET_PREFERENCES = gql`
     setPreferences(input: $input) {
       userId
       preferredLocations
-      remote
-      paginationLimit
       preferredTitles
       preferredSkills
+      industries
+      remote
+      salaryMin
+      salaryMax
+      salaryCurrency
+      notificationsEnabled
+      paginationLimit
+      createdAt
       updatedAt
     }
   }
