@@ -1,10 +1,13 @@
 'use client';
 
 import React, { useMemo, useState } from 'react';
-import { gql, useMutation, useQuery, useLazyQuery } from '@apollo/client';
+import { useMutation, useQuery, useLazyQuery } from '@apollo/client';
 import { shallow } from 'zustand/shallow';
 import { useUserStore } from '@/store/userStore';
-import SafeHtml from '@/components/safeHtml';
+import { JobDetailsView } from './jobDetailsView';
+import { INGEST_JOBS } from '@/graphql/mutations/injestJobs';
+import { JOB_LISTINGS_BY_USER, JOB_LISTING } from '@/graphql/queries/jobListings';
+import { formatDate } from '@/lib/parseDateTime';
 
 /**
  * Jobs Page
@@ -15,48 +18,6 @@ import SafeHtml from '@/components/safeHtml';
  *
  * NOTE: Replace `demoUserId` with your actual auth user id.
  */
-
-const INGEST_JOBS = gql`
-  mutation IngestJobs($userId: ID!, $filters: JobFiltersInput!) {
-    ingestJobs(userId: $userId, filters: $filters) {
-      id
-    }
-  }
-`;
-
-const JOB_LISTINGS_BY_USER = gql`
-  query JobListingsByUser($userId: ID!, $limit: Int = 12, $offset: Int = 0) {
-    jobListingsByUser(user_id: $userId, limit: $limit, offset: $offset) {
-      id
-      title
-      company
-      location
-      job_type
-      salary
-      publication_date
-      source
-    }
-  }
-`;
-
-const JOB_LISTING = gql`
-  query JobListing($id: ID!) {
-    jobListing(id: $id) {
-      id
-      title
-      company
-      location
-      job_type
-      salary
-      publication_date
-      source
-      description
-      tags
-      job_highlights
-      raw_payload
-    }
-  }
-`;
 
 export default function JobsPage() {
   const user = useUserStore((s) => s.user, shallow);
@@ -102,9 +63,7 @@ export default function JobsPage() {
   if (!user) {
     return (
       <div className='container py-6'>
-        <div className='rounded-xl border p-6 text-sm text-muted-foreground'>
-          Loading user data...
-        </div>
+        <div className='rounded-xl border p-6 text-sm text-muted-foreground'>Loading user data...</div>
       </div>
     );
   }
@@ -171,8 +130,8 @@ export default function JobsPage() {
           </div>
         ) : (
           <ul className='grid grid-cols-1 gap-3'>
-            {items.map((job) => (
-              <li key={job.id} className='rounded-xl border p-4'>
+            {items.map((job, idx) => (
+              <li key={`${job.id}-${job.source}-${idx}`} className='rounded-xl border p-4'>
                 <div className='flex items-start justify-between gap-3'>
                   <div>
                     <h3 className='text-base font-semibold leading-tight'>{job.title}</h3>
@@ -184,13 +143,14 @@ export default function JobsPage() {
                       {job.salary ? <span className='ml-2'>• {job.salary}</span> : null}
                     </div>
                     <div className='mt-1 text-xs opacity-70'>
-                      Posted: {new Date(job.publication_date).toLocaleDateString()}
+                      {console.log('job.publication_date', formatDate(job.publication_date))}
+                      Posted: {formatDate(job.publication_date)}
                     </div>
                   </div>
                   <div className='flex items-center gap-2'>
                     <button
                       onClick={() => openDetails(job.id)}
-                      className='rounded-lg border px-3 py-1.5 text-sm hover:bg-muted'
+                      className='rounded-lg border border-accent px-3 py-1.5 text-sm hover:bg-muted'
                     >
                       Details
                     </button>
@@ -251,60 +211,6 @@ export default function JobsPage() {
           </div>
         </div>
       )}
-    </div>
-  );
-}
-
-function JobDetailsView({ job }) {
-  const payloadPretty = useMemo(() => {
-    try {
-      return JSON.stringify(job.raw_payload ?? {}, null, 2);
-    } catch {
-      return '{}';
-    }
-  }, [job?.raw_payload]);
-
-  return (
-    <div className='space-y-3'>
-      <header>
-        <h3 className='text-xl font-semibold leading-tight'>{job.title}</h3>
-        <div className='text-sm text-muted-foreground'>
-          {job.company} • {job.location || '—'}
-        </div>
-        <div className='mt-1 text-xs opacity-80'>
-          Type: {job.job_type} • Source: {job.source}
-          {job.salary ? <span className='ml-2'>• {job.salary}</span> : null}
-        </div>
-        <div className='mt-1 text-xs opacity-70'>Posted: {new Date(job.publication_date).toLocaleDateString()}</div>
-      </header>
-
-      <section className='prose prose-sm max-w-none'>
-        <h4>Description</h4>
-        <SafeHtml className='whitespace-pre-wrap text-sm leading-relaxed' html={job.description} />{' '}
-      </section>
-
-      {(job.tags?.length || job.job_highlights?.length) && (
-        <section>
-          <h4 className='mb-1 text-sm font-medium'>Highlights</h4>
-          <div className='flex flex-wrap gap-1.5'>
-            {job.tags?.map((t) => (
-              <span key={t} className='rounded-full border px-2 py-0.5 text-xs'>
-                {t}
-              </span>
-            ))}
-            {job.job_highlights?.map((h, i) => (
-              <span key={i} className='rounded-full border px-2 py-0.5 text-xs'>
-                {h}
-              </span>
-            ))}
-          </div>
-        </section>
-      )}
-
-      <details className='rounded-xl border bg-muted/30 p-3'>
-        <summary className='cursor-pointer text-sm font-medium'>View original payload</summary>
-        <pre className='mt-2 overflow-auto rounded-lg bg-black/80 p-3 text-xs text-white'>{payloadPretty}</pre>
-      </details>
     </div>
   );
 }

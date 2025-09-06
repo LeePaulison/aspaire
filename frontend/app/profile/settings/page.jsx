@@ -1,18 +1,24 @@
+// app/settings/page.jsx  (or pages/settings.jsx)
 'use client';
 
-import { useUserStore } from "@/store/userStore";
-import { usePreferencesStore } from "@/store/preferencesStore";
+import { useSession } from 'next-auth/react';
+import PreferencesForm from '@/components/prefs/preferencesForm';
 
 export default function SettingsPage() {
-  const user = useUserStore((s) => s.user);
-  const preferences = usePreferencesStore((s) => s.preferences);
-  console.log("[SettingsPage] User:", user);
-  console.log("[SettingsPage] Preferences:", preferences);
+  const { data: session, status } = useSession();
+  if (status === 'loading') return null;
+
   return (
-    <div className="container mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-4">Settings</h1>
-      <p>Manage your account settings here.</p>
-      {/* Add more settings content here */}
+    <div className="container py-8 space-y-8">
+      <header>
+        <h1 className="text-2xl font-semibold">Settings</h1>
+        <p className="text-sm text-muted-foreground">Personalize your job feed and defaults.</p>
+      </header>
+
+      <section aria-labelledby="prefs-heading" className="space-y-4">
+        <h2 id="prefs-heading" className="text-xl font-medium">Preferences</h2>
+        <PreferencesForm />
+      </section>
     </div>
   );
 }
